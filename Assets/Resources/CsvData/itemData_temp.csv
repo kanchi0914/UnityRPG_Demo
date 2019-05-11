@@ -1,0 +1,9 @@
+名前,ID,説明,買値,売値,効果値,消費か,アイテムタイプ,メッセージ1,ターゲット,ダメージタイプ,属性,追加効果,範囲,戦闘中に使用可能か,フロアで使用可能化,出現率
+粗悪な油,soaku_abura,ランタンの残量を10回復する。,100,50,10,TRUE,drug,,nothing,other,nothing,nothing,nothing,FALSE,TRUE,100
+火炎ビン,kaenbin,特になし,250,100,50,true,drug,,opponent,other,fire,nothing,entire,true,false,50
+毒ビン,dokubin,特になし,250,100,0,true,drug,,opponent,other,nothing,poison,entire,true,false,50
+薬草,yakusou,味方一人のHPを60程度回復する。,80,30,60,TRUE,drug,,ally,hpHeal,nothing,nothing,single,TRUE,TRUE,100
+上薬草,jouyakusou,味方一人のHPを120程度回復する。,160,60,120,TRUE,drug,,ally,hpHeal,nothing,nothing,single,TRUE,TRUE,60
+特薬草,tokkouyaku,味方一人のHPを250程度回復する。,250,100,250,TRUE,drug,,ally,hpHeal,nothing,nothing,single,TRUE,TRUE,30
+特効薬,tokkoyaku,味方一人のHPを全回復し、状態異常を治す。,500,200,999,TRUE,drug,,ally,hpHeal/cure,nothing,nothing,single,TRUE,TRUE,10
+魔力の粉,maryokunokona,味方一人のSPを20程度回復する。,200,80,20,TRUE,drug,,ally,spHeal,nothing,nothing,single,TRUE,TRUE,30

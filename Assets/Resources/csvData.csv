@@ -1,0 +1,3 @@
+﻿id,name,HP,attack,skill,type
+slime,slime,10,5,fire,ranger
+ghost,ghost,18,8,ranger

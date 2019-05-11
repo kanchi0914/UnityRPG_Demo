@@ -1,0 +1,54 @@
+スキル名,SP消費量,威力,タイプ,属性,追加効果,説明文,使用メッセージ,発動タイプ,戦闘時に使用可能か,フィールドで使用可能か,ターゲット,範囲,ダメージタイプ,職業タイプ
+,,,,,,敵単体にダメージ,～は〇〇を使った," active,passive"," true,false"," true,false"," enemy, ally, self, all"," single, entire, random"," nothing, damage,heal,buff,cure, ailment, other",nothing
+攻撃,0/0/0,100,physics,nothing,nothing,,の攻撃！,active,true,false,opponent,single,damage,nothing
+防御,0/0/0,0,physics,nothing,nothing,,は防御している。,active,true,false,self,single,nothing,nothing
+眠り状態,0/0/0,0,physics,nothing,nothing,,は眠っている。,active,true,false,self,single,nothing,nothing
+逃走,0/0/0,0,physics,nothing,nothing,,は逃走を試みた！,active,true,false,self,single,nothing,nothing
+何もしない,0/0/0,0,physics,nothing,nothing,,は何もせずじっとしている。,active,true,false,self,single,nothing,nothing
+混乱,0/0/0,0,physics,nothing,nothing,,は混乱して味方を攻撃した！,active,true,false,ally,single,nothing,nothing
+粘液,0/0/0,0,physics,nothing,nothing,,は<color=orange>粘液</color>を吐き出した！,active,true,false,opponent,single,nothing,nothing
+殴りつける,0/0/0,150,physics,nothing,stun,,は渾身の力を込めて<color=orange>殴りつけた</color>！,active,true,false,opponent,single,nothing,nothing
+毒攻撃,0/0/0,100,physics,nothing,poison,,の<color=orange>毒攻撃</color>！,active,true,false,opponent,single,nothing,nothing
+氷攻撃,0/0/0,100,physics,ice,nothing,,の<color=orange>氷攻撃</color>！,active,true,false,opponent,single,nothing,nothing
+即死攻撃,0/0/0,100,physics,nothing,death,,の<color=orange>即死攻撃</color>！,active,true,false,opponent,single,nothing,nothing
+噛みつき,0/0/0,100,physics,nothing,nothing,,の<color=orange>噛みつき</color>！,active,true,false,opponent,single,nothing,nothing
+痺れる粉,3,0,physics,nothing,paralysis,,は<color=orange>痺れる粉</color>を撒き散らした！,active,true,false,opponent,entire,nothing,nothing
+毒の粉,3,0,physics,nothing,poison,,は<color=orange>毒の粉</color>を撒き散らした！,active,true,false,opponent,entire,nothing,nothing
+眠りの歌,3,0,physics,nothing,sleep,,は<color=orange>眠りの歌</color>を歌った！,active,true,false,opponent,entire,nothing,nothing
+叫び声,3,0,physics,nothing,nothing,,は<color=orange>叫び声</color>をあげた！,active,true,false,opponent,entire,nothing,nothing
+炎のブレス,5,120,magic,nothing,nothing,,は<color=blue>炎のブレス</color>を吐いた！,active,true,false,opponent,entire,nothing,nothing
+地ならし,4,80,physics,nothing,nothing,,は<color=orange>地ならし</color>を巻き起こした！,active,true,false,opponent,entire,nothing,nothing
+ソニックバット,2/3/4,100/130/180,physics,nothing,nothing,敵単体にダメージを与える。必ずターンの最初に動くことができる　威力:$VALUE$,は<color=orange>ソニックバット</color>を放った！,active,TRUE,FALSE,opponent,single,damage,warrior
+パワースマッシュ,4/5/6,160/200/250,physics,nothing,nothing,敵単体にダメージを与える　追加効果：麻痺,はパワースマッシュを放った！,active,TRUE,FALSE,opponent,single,damage,warrior
+メテオストライク,8/12/16,250/350/500,physics,nothing,nothing,敵単体に大ダメージを与える　追加効果：麻痺,はメテオストライクを放った！,active,TRUE,FALSE,opponent,single,damage,warrior
+なぎ払い,3/5/7,80/120/200,physics,nothing,nothing,敵全体にダメージを与える,はなぎ払いを放った！,active,TRUE,FALSE,opponent,entire,damage,warrior
+回転斬り,9/12/15,200/260/350,physics,nothing,nothing,敵全体に大ダメージを与える,は回転斬りを放った！,active,TRUE,FALSE,opponent,entire,damage,warrior
+ドレインアタック,4/6/8,120,physics,nothing,nothing,敵単体にダメージを与える。ダメージ量に応じてHPが回復する,はドレインアタックを放った！,active,TRUE,FALSE,opponent,single,nothing,warrior
+闘魂,0,0,physics,nothing,nothing,通常攻撃時、まれに相手をスタンさせることがある,,passive,true,false,self,single,nothing,warrior
+ウォーミングアップ,0,0,physics,nothing,nothing,1ターン目、必ず最初に動けるようになる,,passive,true,false,self,single,nothing,warrior
+先手必勝,0,0,physics,nothing,nothing,戦闘で先手を取る確率が上がる。運の高さによる確率ボーナスを受ける,,passive,true,false,self,single,nothing,warrior
+疾風の舞,8,0,physics,nothing,nothing,5ターンの間、必ずターンの最初に動けるようになる,は疾風の如く舞った！,active,true,false,self,single,nothing,warrior
+怒涛の舞,8,0,physics,nothing,nothing,5ターンの間物理攻撃力が上昇し、呪い・恐怖状態にならない,は怒涛の如く舞った！,active,true,false,self,single,nothing,warrior
+チャージ,2,0,physics,nothing,nothing,次のターン、筋力が倍になる,は力を溜めている！,active,TRUE,FALSE,self,single,buff,warrior
+ハイボルテージ,2,0,physics,nothing,nothing,次に与えるダメージが倍になる。連続で使用できるが、ダメージを受けると無効になる,はボルテージを高めている！,active,TRUE,FALSE,self,single,buff,warrior
+暴れまわる,6,150,physics,nothing,nothing,敵味方関係なくランダムにダメージを与える,は敵味方関係なく暴れまわった！,active,TRUE,FALSE,ally,random,damage,warrior
+狂戦士の心,0,0,physics,nothing,nothing,戦闘開始時に混乱する。混乱状態のとき、攻撃力が大幅に上がる,,passive,true,false,self,single,nothing,warrior
+捨て身,0,0,physics,nothing,nothing,防御力が下がるが、物理攻撃力が上がる,,passive,true,false,self,single,nothing,warrior
+勝ちゆく者,0,0,physics,nothing,nothing,敵を倒すとHPが回復する,,passive,true,false,self,single,nothing,warrior
+戦闘のリズム,0,0,physics,nothing,nothing,戦闘中、倒したユニットの数だけ攻撃力が上がる,,passive,true,false,self,single,nothing,warrior
+修羅,0,0,physics,nothing,nothing,装備している防具の数が少ないほど、攻撃力が上がる,,passive,true,false,self,single,nothing,warrior
+猛攻,0,0,physics,nothing,nothing,味方全員が攻撃を行ったとき、追加でもう一度攻撃を行う,,,,,,,,
+一気呵成,0,0,physics,nothing,nothing,1ターンに味方が5回以上攻撃を行ったとき、追加で2回攻撃を行う ,,passive,true,false,self,single,nothing,warrior
+ヒールⅠ,3,250,magic,nothing,nothing,味方一人のHPを小回復する,は<color=blue>ヒールⅠ</color>の魔法を唱えた！,active,true,true,ally,single,nothing,cleric
+ヒールⅡ,5,600,magic,nothing,nothing,味方一人のHPを中回復する,は<color=blue>ヒールⅡ</color>の魔法を唱えた！,active,true,true,ally,single,nothing,cleric
+ヒールⅢ,7,9999,magic,nothing,nothing,味方一人のHPを全回復する,は<color=blue>ヒールⅢ</color>の魔法を唱えた！,active,true,true,ally,single,nothing,cleric
+ヒールシャワーⅠ,6,200,magic,nothing,nothing,味方全体のHPを中回復する,は<color=blue>ヒールシャワーⅠ</color>の魔法を唱えた！,active,true,true,ally,entire,nothing,cleric
+ヒールシャワーⅡ,12,400,magic,nothing,nothing,味方全体のHPを大回復する,は<color=blue>ヒールシャワーⅡ</color>の魔法を唱えた！,active,true,true,ally,entire,nothing,cleric
+キュア,2,0,magic,nothing,nothing,味方一人の状態異常を回復する,は<color=blue>キュア</color>の魔法を唱えた！,active,true,true,ally,single,nothing,cleric
+キュアシャワー,4,0,magic,nothing,nothing,味方全体の状態異常を回復する,は<color=blue>キュアシャワー</color>の魔法を唱えた！,active,true,true,ally,entire,nothing,cleric
+リザレクション,30,0,magic,nothing,nothing,味方一人の死亡状態を回復する,は<color=blue>リザレクション</color>の魔法を唱えた！,active,true,false,ally,single,nothing,cleric
+ファイアボール,4,180,magic,fire,nothing,敵単体に炎属性のダメージを与える　追加効果：火傷,は<color=blue>ファイアボール</color>の魔法を唱えた！,active,true,false,opponent,single,nothing,mage
+フロストウェーブ,4,140,magic,ice,nothing,敵全体に氷属性のダメージを与える　追加効果：凍結,は<color=blue>フロストウェーブ</color>の魔法を唱えた！,active,true,false,opponent,entire,nothing,mage
+サンダーブレイク,5,120,magic,thunder,nothing,ランダムな敵に雷属性のダメージを与える　追加効果：麻痺,は<color=blue>サンダーブレイク</color>の魔法を唱えた！,active,true,false,opponent,random,nothing,mage
+シェルアーマー,6,0,magic,nothing,nothing,5ターンの間、味方一人の耐久を上昇させる,は<color=blue>シェルアーマー</color>の魔法を唱えた！,active,true,false,ally,single,nothing,mage
+マジックアーマー,6,0,magic,nothing,nothing,5ターンの間、味方一人の精神を上昇させる,は<color=blue>マジックアーマー</color>の魔法を唱えた！,active,true,false,ally,single,nothing,nothing
