@@ -54,13 +54,12 @@ public class Venturer : Unit
         {Status.LUK, 0}
     };
 
-
-    public Venturer(ItemGenerator itemGenerator, SkillGenerator2 skillGenerator)
+    public Venturer(GameController gameController, ItemGenerator itemGenerator, SkillGenerator2 skillGenerator)
+       : base (gameController)
     {
         this.itemGenerator = itemGenerator;
         this.skillGenerator = skillGenerator;
     }
-
 
     public void Init()
     {

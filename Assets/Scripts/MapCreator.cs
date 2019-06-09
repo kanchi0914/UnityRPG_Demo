@@ -126,12 +126,12 @@ public class MapCreator : MonoBehaviour
 
         //AddCellType(Cell.CellType.enemy, 10);
 
-        //AddCellType(Cell.CellType.shop, 10);
+        AddCellType(Cell.CellType.shop, 10);
         //AddCellType(Cell.CellType.rareTreasure, 1);
         //AddCellType(Cell.CellType.trap, 5);
         //AddCellType(Cell.CellType.Event, 5);
         //AddCellType(Cell.CellType.fountain, 5);
-        AddCellType(Cell.CellType.human, 50);
+        //AddCellType(Cell.CellType.human, 50);
         //AddCellType(Cell.CellType.shop, 5);
 
         AddGoal();

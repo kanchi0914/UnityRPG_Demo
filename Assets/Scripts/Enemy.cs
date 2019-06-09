@@ -27,11 +27,11 @@ public class Enemy : Unit {
     //基礎GOld
     private int gold = 100;
 
-    private int minLv = 1;
+    //private int minLv = 1;
     private int maxLv = 1;
 
     public int Gold { get => gold; set => gold = value; }
-    public int MinLv { get => minLv; set => minLv = value; }
+    public int MinLv { get; set; } = 1; 
     public Dictionary<Item, int> DropItems { get => dropItems; set => dropItems = value; }
     public int Exp { get => exp; set => exp = value; }
     public int Gold1 { get => gold; set => gold = value; }
@@ -40,13 +40,11 @@ public class Enemy : Unit {
     public List<EnemyType> EnemyTypes { get => enemyTypes; set => enemyTypes = value; }
     public bool IsUnique { get => isUnique; set => isUnique = value; }
 
-    public Enemy(GameController gameController)
+    public Enemy(GameController gameController) : base (gameController)
     {
         this.gameController = gameController;
         enemyManager = gameController.EnemyManager;
         MinLv = Statuses[Status.Lv];
-        UnitType1 = UnitType.enemy;
-        //CreateSample();
     }
 
     public void AddLv(int num)
@@ -178,12 +176,12 @@ public class Enemy : Unit {
 
     public int GetExp()
     {
-        return ((int)((Statuses[EnumHolder.Status.Lv] - minLv) *0.2* Exp + Exp));
+        return ((int)((Statuses[EnumHolder.Status.Lv] - MinLv) *0.2* Exp + Exp));
     }
 
     public int GetGold()
     {
-        return ((int)((Statuses[EnumHolder.Status.Lv] - minLv) * 0.2 * gold + gold));
+        return ((int)((Statuses[EnumHolder.Status.Lv] - MinLv) * 0.2 * gold + gold));
     }
 
 

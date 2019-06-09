@@ -9,14 +9,14 @@ public class Weapon : Equipment {
     EnemyType effectivenessKeys;
     Ailment additonKeys;
 
-    public Dictionary<EnemyType, int> Effectivenesses { get ; set ; }
+    public Dictionary<EnemyType, int> Effectivenesses { get; set; } = new Dictionary<EnemyType, int>();
     //public Dictionary<EnemyType, int> AdditonalEffectivenesses { get; set; }
-    public Dictionary<Status, int> Statuses { get; set; }
+    public Dictionary<Status, int> Statuses { get; set; } = new Dictionary<Status, int>();
     //public Dictionary<Status, int> AdditonalStatuses { get; set; }
-    public Dictionary<Ailment, int> Ailments { get; set; }
+    public Dictionary<Ailment, int> Ailments { get; set; } = new Dictionary<Ailment, int>();
     //public Dictionary<Ailment, int> AdditionalAilments { get; set; }
-    public Dictionary<Attribution, int> Attributions { get; set; }
-    public Dictionary<WeaponAbility, int> WeaponAbilities { get; set; }
+    public Dictionary<Attribution, int> Attributions { get; set; } = new Dictionary<Attribution, int>();
+    public Dictionary<WeaponAbility, int> WeaponAbilities { get; set; } = new Dictionary<WeaponAbility, int>();
 
     public Weapon(string name = "装備無し", string id = "nothing"
         , int value = 0, int hit = 0)

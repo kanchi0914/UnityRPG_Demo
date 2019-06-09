@@ -24,6 +24,12 @@ public class CallBackManager
         this.gameController = gameController;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="onClick"></param>
+    /// <param name="onCanceled"></param>
+    /// <param name="waitingTarget">クリック対象オブジェクトのタグ名</param>
     public void SetNewCallBacks(Action<string> onClick = null, Action onCanceled = null, string waitingTarget = "")
     {
         CallBackOnClicked = onClick;
@@ -43,11 +49,11 @@ public class CallBackManager
     //対象のtagをクリック後に呼ばれるメソッド
     //============================================================
 
-    public void OnClickedAllyBySkillTargettingInField(string id)
-    {
-        gameController.SetSelectedAllyID(id);
-        gameController.UseSkillInField();
-    }
+    //public void OnClickedAllyBySkillTargettingInField(string id)
+    //{
+    //    gameController.SetSelectedAllyID(id);
+    //    gameController.UseSkillInField();
+    //}
 
     public void OnClickedAllyByItemTargettingInField(string id)
     {

@@ -29,6 +29,8 @@ public class ItemWindowManager : MonoBehaviour
 
     private List<Item> items;
 
+    private TextMeshProUGUI topText; 
+
     private Transform multiSelectingButtonObject;
     private Transform multiProcessingButtonObject;
     private Transform sortButtonObject;
@@ -94,6 +96,8 @@ public class ItemWindowManager : MonoBehaviour
         itemContentPanel = ItemWindowPanel.Find("ScrollView/Viewport/Content");
         itemTexts = itemContentPanel.GetComponentsInChildren<TextMeshProUGUI>();
 
+        topText = ItemWindowPanel.Find("TopText").GetComponent<TextMeshProUGUI>();
+
         subWindowPanel = ItemWindowPanel.Find("SubWindow");
 
         //複数選択ボタンのリスナーを設定
@@ -125,18 +129,42 @@ public class ItemWindowManager : MonoBehaviour
     public void SetTwoColumnItemWindow(string situation, List<Item> items)
     {
         this.situation = situation;
+        //参照私
         this.items = items;
         InitMainWindow(items);
         InitSubWindow();
         this.ItemWindowPanel.gameObject.SetActive(true);
     }
 
+
+    public void UpdateWindow()
+    {
+        InitMainWindow(this.items);
+        InitSubWindow();
+    }
     /// <summary>
     /// メインウィンドウの初期設定
     /// </summary>
     /// <param name="items"></param>
     public void InitMainWindow(List<Item> items)
     {
+
+        if (this.situation == "buying")
+        {
+            topText.text = "購入アイテムを選択";
+            multiProcessingTextObj.text = "まとめて購入";
+        }
+        else if (this.situation == "selling")
+        {
+            topText.text = "売却アイテムを選択";
+            multiProcessingTextObj.text = "まとめて売却";
+        }
+        else
+        {
+            topText.text = "所持アイテム一覧";
+            multiProcessingTextObj.text = "捨てる";
+        }
+       
         //ボタンをすべて削除
         foreach (Transform child in itemContentPanel)
         {
@@ -177,22 +205,23 @@ public class ItemWindowManager : MonoBehaviour
 
     public void CreateItemButton(Item item)
     {
-        Transform t = Instantiate(itemButtonObject);
-        Button button = t.GetComponent<Button>();
+        Transform itemTransform = Instantiate(itemButtonObject);
+        Button button = itemTransform.GetComponent<Button>();
 
         //2カラムか1カラムか
         if (situation == "menu")
         {
-            t.SetParent(itemContentPanel, false);
+            itemTransform.SetParent(itemContentPanel, false);
         }
         else
         {
-            t.SetParent(itemContentPanel, false);
+            itemTransform.SetParent(itemContentPanel, false);
             //throw Utility.ItemWindowError;
         }
 
-        t.gameObject.SetActive(true);
-        TextMeshProUGUI text = t.GetComponentInChildren<TextMeshProUGUI>();
+        itemTransform.gameObject.SetActive(true);
+        TextMeshProUGUI text = itemTransform.GetComponentInChildren<TextMeshProUGUI>();
+
         string equipped = "";
         if (item.ItemType == ItemType.weapon || item.ItemType == ItemType.guard)
         {
@@ -203,12 +232,22 @@ public class ItemWindowManager : MonoBehaviour
             }
         }
         text.text = equipped + item.Name;
+
+        if (situation == "buying")
+        {
+            text.text += $" {item.PurchasePrice}";
+        }
+        else if (situation == "selling")
+        {
+            text.text += $" {item.SellingPrice}";
+        }
+
         text.color = Color.white;
-        t.name = item.ID;
+        itemTransform.name = item.ID;
         button.interactable = true;
         button.onClick.AddListener(() => OnClickItemButton(item));
 
-        itemButtonObjects.Add(t);
+        itemButtonObjects.Add(itemTransform);
 
     }
 
@@ -312,13 +351,13 @@ public class ItemWindowManager : MonoBehaviour
             {
                 Item selected = items.Find(i => i.ID == item.ID);
                 SelectedItems.Add(item);
-                contentSetter.SetColorOfButtonObject(buttonObject, Color.cyan, 0.6f);
+                contentSetter.SetColorOfButtonObject(buttonObject, Color.cyan);
             }
             else
             {
                 Item selected = items.Find(i => i.ID == item.ID);
                 SelectedItems.Remove(item);
-                contentSetter.SetColorOfButtonObject(buttonObject, Color.white, 0.6f);
+                contentSetter.SetColorOfButtonObject(buttonObject, Color.white);
             }
         }
         //通常時
@@ -336,11 +375,49 @@ public class ItemWindowManager : MonoBehaviour
     {
         clickedCommand = "use";
 
-        if (SelectedItem.IsEquipment())
+        if (this.situation == "buying")
         {
-            Equipment eq = SelectedItem as Equipment;
-            //装備する対象を選ぶ
-            if (string.IsNullOrEmpty(eq.EquippedAllyID))
+            if (gameController.AllyManager.Allies[0].Items.Count() >=
+                gameController.MaxItemNum)
+            {
+                gameController.SetInfo(message: "アイテムが一杯で購入できません");
+            }
+            else
+            {
+                items.Remove(selectedItem);
+                gameController.AllyManager.AddItem(selectedItem);
+                gameController.SetInfo(message: $"{selectedItem.Name}を購入しました");
+            }
+        }
+        else if (this.situation == "selling")
+        {
+            items.Remove(selectedItem);
+            //gameController.AllyManager.RemoveItem(selectedItem);
+            gameController.SetInfo(message: $"{selectedItem.Name}を売却しました");
+        }
+
+        else
+        {
+            if (SelectedItem.IsEquipment())
+            {
+                Equipment eq = SelectedItem as Equipment;
+                //装備する対象を選ぶ
+                if (string.IsNullOrEmpty(eq.EquippedAllyID))
+                {
+                    //gameController.Situation = "use_item";
+                    //gameController.WaitClick("Ally");
+                    gameController.CallBackManager.SetNewCallBacks(
+                        gameController.CallBackManager.OnClickedAllyByItemTargettingInField,
+                        gameController.CallBackManager.OnCanceledAllySelecting,
+                        "Ally");
+                }
+                //外す
+                else
+                {
+                    gameController.UseItemInField();
+                }
+            }
+            else if (SelectedItem.Target == Target.ally)
             {
                 //gameController.Situation = "use_item";
                 //gameController.WaitClick("Ally");
@@ -349,25 +426,15 @@ public class ItemWindowManager : MonoBehaviour
                     gameController.CallBackManager.OnCanceledAllySelecting,
                     "Ally");
             }
-            //外す
             else
             {
                 gameController.UseItemInField();
             }
-        }
-        else if (SelectedItem.Target == Target.ally)
-        {
-            //gameController.Situation = "use_item";
-            //gameController.WaitClick("Ally");
-            gameController.CallBackManager.SetNewCallBacks(
-                gameController.CallBackManager.OnClickedAllyByItemTargettingInField, 
-                gameController.CallBackManager.OnCanceledAllySelecting,
-                "Ally");
-        }
-        else
-        {
 
         }
+
+        UpdateWindow();
+
     }
 
 
@@ -382,11 +449,15 @@ public class ItemWindowManager : MonoBehaviour
         }
         else if (situation == "buying")
         {
-
+            gameController.SetConfirmationWindow(PurchaseItems,
+                "選択されたアイテムを\n購入してよろしいですか？",
+                $"{selectedItems.Count}個のアイテムを購入しました。");
         }
         else if (situation == "selling")
         {
-
+            gameController.SetConfirmationWindow(CellItems,
+            "選択されたアイテムを\n売却してよろしいですか？",
+            $"{selectedItems.Count}個のアイテムを売却しました。");
         }
 
     }
@@ -405,6 +476,52 @@ public class ItemWindowManager : MonoBehaviour
     /// アイテムを捨てる
     /// </summary>
     public void DiscardItems()
+    {
+        if (selectedItems.Count > 1)
+        {
+            foreach (Item item in SelectedItems)
+            {
+                items.RemoveAll(i => i.ID == item.ID);
+            }
+        }
+        else
+        {
+            items.Remove(selectedItem);
+        }
+        SelectedItems = new List<Item>();
+        selectedItem = new Item();
+        gameController.CloseAll();
+    }
+
+    public void PurchaseItems()
+    {
+        int sumPrice = 0;
+
+        selectedItems.ForEach(e => sumPrice += e.PurchasePrice);
+        if (sumPrice > gameController.Gold)
+        {
+            gameController.CallBackManager.ClearCallBack();
+            gameController.SetInfo(message: "所持金が足りません");
+        }
+        else
+        {
+            if (selectedItems.Count > 1)
+            {
+                foreach (Item item in SelectedItems)
+                {
+                    items.RemoveAll(i => i.ID == item.ID);
+                }
+            }
+            else
+            {
+                items.Remove(selectedItem);
+            }
+            SelectedItems = new List<Item>();
+            selectedItem = new Item();
+        }
+    }
+
+    public void CellItems()
     {
         if (selectedItems.Count > 1)
         {
@@ -448,7 +565,7 @@ public class ItemWindowManager : MonoBehaviour
             {
                 Debug.Log(itemButtonObjects.Count);
                 Image buttonImage = itemButtonObjects[i].transform.GetComponent<Image>();
-                contentSetter.SetColorOfButtonObject(itemButtonObjects[i].transform, Color.white, 0.6f);
+                contentSetter.SetColorOfButtonObject(itemButtonObjects[i].transform, Color.white);
 
             }
             isMultiSelecting = false;

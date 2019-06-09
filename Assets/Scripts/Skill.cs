@@ -39,11 +39,27 @@ public class Skill : Ability
     //public int SkillPower { get => skillPower; set => skillPower = value; }
     public Ailment AdditionalAilment { get ; set; } = Ailment.nothing;
     public SkillType SkillType { get ; set; } = SkillType.active;
+    public string DisplayedSkillName
+    {
+        get { return ConvertSkillNameToString(SkillName) + "Lv" + SkillLevel.ToString(); }
+        set { }
+    }
     public SkillName SkillName { get ; set; }
 
     public int SkillLevel { get; set; } = 1;
 
     public int[] SpConsumptions { get; set; } = new int[3];
+
+    public string DescriptionMaster { get; set; } = "";
+    public string Description
+    {
+        get
+        {
+            return DescriptionMaster.Replace("$VALUE$", DescriptionByLv[SkillLevel]);
+        }
+        set
+        { }
+    }
     public string[] DescriptionByLv { get; set; } = new string[3];
     public int[] ValueByLv { get; set; } = new int[3];
 

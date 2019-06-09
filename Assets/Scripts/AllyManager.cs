@@ -75,25 +75,6 @@ public class AllyManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        //直す
-        //if (isFull && !IsOrdering)
-        //{
-        //    //isClicked = false;
-        //    if (!isClicked)
-        //    {
-        //        topText.text = "Info";
-        //        infoText.text = "持ち物が一杯です\nアイテムを整理してください";
-        //        infoPanel.gameObject.SetActive(true);
-        //    }
-        //    else
-        //    {
-        //        IsOrdering = true;
-        //        this.menuManager.OrderItems(restItems);
-        //        isClicked = false;
-        //    }
-        //}
-
-
     }
 
     public void Init(GameController gameController)
@@ -150,7 +131,7 @@ public class AllyManager : MonoBehaviour {
         ally5.skills.Add(skill);
         skill = gameController.SkillGenerator.Generate("毒の粉");
         ally5.skills.Add(skill);
-        skill = gameController.SkillGenerator.Generate("ヒールⅠ");
+        skill = gameController.SkillGenerator.Generate("ヒール");
         ally5.skills.Add(skill);
         Allies.Add(ally5);
 
@@ -347,6 +328,12 @@ public class AllyManager : MonoBehaviour {
     {
         List<Item> items = new List<Item>(){item};
         AddItems(items);
+    }
+
+    public void RemoveItem(Item item)
+    {
+        List<Item> items = Allies[0].Items;
+        if (item.isConsumable) items.Remove(items.Find(i => i.ID == item.ID));
     }
 
     //アイテム追加---------------------------------------------------------

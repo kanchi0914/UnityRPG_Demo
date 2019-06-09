@@ -26,9 +26,42 @@ public class NewBehaviourScript : MonoBehaviour
     public void load()
     {
         Convert.ToBoolean("true");
-
-  
     }
+
+
+    [Test]
+    public void tesss()
+    {
+        var o = new Oaa();
+        o.AAAA();
+    }
+
+
+    public class Oaa
+    {
+        public struct aaa { public string Name; };
+
+        public void AAAA()
+        {
+            var b = getStrunct("aaaaaa");
+            for (int i = 0; i < 10; i++)
+            {
+                aaa c = new aaa();
+
+                c = getStrunct(i.ToString());
+                Console.WriteLine(c);
+            }
+            Console.WriteLine(b);
+        }
+
+        public aaa getStrunct(string s)
+        {
+            var a = new aaa();
+            a.Name = s;
+            return a;
+        }
+    }
+
 
     [Test]
     public void AllyTest()
@@ -36,7 +69,7 @@ public class NewBehaviourScript : MonoBehaviour
         ItemGenerator itemGenerator = new ItemGenerator();
     }
 
-    [Test]
+    //[Test]
     public void ItemGenerateTest()
     {
         //Utility.GetStringOfEnum<ItemName>(ItemName.薬草);
@@ -49,7 +82,7 @@ public class NewBehaviourScript : MonoBehaviour
         Item item = gameController.ItemGenerator.GetItemRandomlyByRatio();
     }
 
-    [Test]
+    //[Test]
     public void ItemWindowTest()
     {
         GameController gameController = new GameController();

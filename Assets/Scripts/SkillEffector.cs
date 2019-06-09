@@ -88,51 +88,24 @@ public class SkillEffector
         }
         else if (skill.SkillName == SkillName.ヒールオール)
         {
-            foreach (Unit u in allyUnits)
-            {
-                int healValue = CalculateHealingValue(skill.ValueByLv[skill.SkillLevel], fromUnit);
-                message += SetDamageByAbility(fromUnit, u, skill, -healValue);
-            }
+            allyUnits.ForEach(u => message += SetHealingBySkill(fromUnit, u, skill));
         }
         else if (skill.SkillName == SkillName.キュア)
         {
-            if (toUnit.Ailments.Count > 0)
-            {
-                toUnit.Ailments.Clear();
-                message += $"{fromUnit}の状態異常が回復した！";
-            }
-            else
-            {
-                message += $"しかし効果がなかった。";
-            }
+            toUnit.RecoverAilment();
         }
         else if (skill.SkillName == SkillName.キュアオール)
         {
             bool isUsed = false;
-            foreach (Unit u in allyUnits)
+
+            allyUnits.ForEach(u => 
             {
-                if (u.Ailments.Count > 0)
-                {
-                    u.Ailments.Clear();
-                    message += $"{fromUnit}の状態異常が回復した！";
-                    isUsed = true;
-                }
-            }
-            if (!isUsed) message += "しかし効果がなかった。";
+                u.RecoverAilment();
+            });
         }
         else if (skill.SkillName == SkillName.リザレクション)
         {
-            if (toUnit.IsDeath)
-            {
-                toUnit.IsDeath = false;
-                int damage = toUnit.Statuses[Status.MaxHP] / 2;
-                SetDamageByAbility(fromUnit, toUnit, skill, damage, false);
-                message += $"{toUnit}は復活した！";
-            }
-            else
-            {
-                message += "しかし効果がなかった。";
-            }
+            toUnit.Resurrect();
         }
 
         //魔法系-------------------------------------------------------
@@ -141,10 +114,11 @@ public class SkillEffector
         //状態異常系-------------------------------------------------------------------------------------------
         else if (skill.SkillName == SkillName.痺れる粉)
         {
-            foreach (Unit u in opponentUnits)
-            {
-                message += SetAilmentInProb(fromUnit, u, Ailment.paralysis);
-            }
+            value = skill.ValueByLv[skill.SkillLevel];
+            opponentUnits.ForEach
+                (
+                u => message += SetAilmentInProb(fromUnit, u, Ailment.paralysis, value)
+                );
         }
         else if (skill.SkillName == SkillName.毒の粉)
         {
@@ -171,7 +145,7 @@ public class SkillEffector
         //バフ・デバフ系---------------------------------------------------------------------------------------
         else if (skill.SkillName == SkillName.粘液)
         {
-            Unit.Buff buff = new Unit.Buff(skill);
+            var buff = new Unit.Buff(skill);
             buff.Description = "敏捷↓";
             buff.Statuses[Status.AGI] = -0.5;
             toUnit.Buffs.Add(buff);
@@ -301,74 +275,9 @@ public class SkillEffector
     public string SetSingleHealing(Skill skill, List<Unit> units, Unit fromUnit, Unit toUnit)
     {
         string message = "";
-        int healValue = CalculateHealingValue(skill.ValueByLv[skill.SkillLevel], fromUnit);
+        int healValue = CalculateSkillHealingValue(skill.ValueByLv[skill.SkillLevel], fromUnit);
         message += SetDamageByAbility(fromUnit, toUnit, skill, -healValue);
         return message;
     }
 
-    //public string SetSingleAilment(Skill skill, List<Unit> units, Unit fromUnit, Unit toUnit)
-    //{
-    //    message += SetAilmentInProb(fromUnit, u, Ailment.paralysis);
-    //}
-
-    //public string SetMultiAilment(Skill skill, List<Unit> units, Unit fromUnit, Unit toUnit)
-    //{
-
-    //}
-
-    
-
-
-    //public bool CheckHit(Unit fromUnit, Unit toUnit)
-    //{
-    //    int random = UnityEngine.Random.Range(0, 100);
-    //    double randomUp = UnityEngine.Random.Range(1.0f, 1.2f);
-    //    double hitProb = fromUnit.GetHitProb() * randomUp;
-    //    double avoidProb = toUnit.GetAvoidProb();
-    //    double per = (hitProb / avoidProb) / 1.5 * 100;
-    //    Debug.Log(per);
-    //    return (per > random);
-    //}
-
-    ////状態異常の付与
-    ////statusは成功確率の依存ステータス
-    //public string SetAilmentInProb(Unit fromUnit, Unit toUnit, Ailment ailment, Status status)
-    //{
-    //    string message = "";
-
-    //    if (!toUnit.Ailments.Contains(ailment))
-    //    {
-    //        int random = UnityEngine.Random.Range(0, 100);
-    //        //int per = ((fromUnit.Statuses[status] + fromUnit.Statuses[Status.LUK])
-    //        //    / ((toUnit.Statuses[Status.MNT] + toUnit.Statuses[Status.LUK]) * 2) * 100);
-
-    //        int per = (fromUnit.Statuses[Status.Lv] * fromUnit.Statuses[Status.INT]) /
-    //            (toUnit.Statuses[Status.Lv] * toUnit.Statuses[Status.INT] * 2) * 100; 
-
-    //        if (per > random)
-    //        {
-    //            message += $"{toUnit.Name}は{ailment.GetAilmentName()}状態になった！\n";
-    //            toUnit.Ailments.Add(ailment);
-    //        }
-    //        else
-    //        {
-    //            message += $"{toUnit.Name}は何ともなかった！\n";
-    //            toUnit.Ailments.Add(ailment);
-    //        }
-    //        Debug.Log(per);
-    //    }
-    //    return message;
-    //}
-
-    ////スキルによる回復値
-    //public int CalculateHealing(int value, Unit fromUnit)
-    //{
-    //    int healValue = 0;
-    //    int mnt = fromUnit.GetStatus(Status.MNT);
-    //    float random = UnityEngine.Random.Range(0.90f, 1.10f);
-    //    healValue = (int)((mnt * value / 100) * random + value / 10);
-    //    if (healValue > 999) healValue = 999;
-    //    //精神値による回復量変化に加えて、10％の基本回復量をプラス
-    //    return healValue;
-    //}
 }

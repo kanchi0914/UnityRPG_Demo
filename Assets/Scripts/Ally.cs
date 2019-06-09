@@ -103,20 +103,10 @@ public class Ally : Unit
     };
 
     //コンストラクタ
-    public Ally(GameController gameController)
+    public Ally(GameController gameController) : base (gameController)
     {
-
         this.gameController = gameController;
-
-        //空
-        //Guard g = new Guard(guardType: GuardType.armor);
-        //this.equippedArmor = g;
-
-        //空
-        //Guard g2 = new Guard(guardType: GuardType.accessory);
-        //this.equippedAccessory = g2;
-
-        UnitType1 = UnitType.ally;
+        //UnitType1 = UnitType.ally;
     }
 
     public override bool Equals(object obj)
@@ -204,6 +194,8 @@ public class Ally : Unit
     /// <returns></returns>
     public string ConsumeLvUpStack()
     {
+        List<LvUpInformation> infos = new List<LvUpInformation>();
+
         int uppedHPSum = 0;
         int uppedSPSum = 0;
 
@@ -224,14 +216,18 @@ public class Ally : Unit
         };
 
         List<string> acquiredSkillTexts = new List<string>();
+        List<string> uppedSkillTexts = new List<string>();
 
         for (int i = 0; i < lvUpStack; i++)
         {
-            var info = GetLvUpBonusAutomatically();
+            LvUpInformation info = new LvUpInformation();
+            info = GetLvUpBonusAutomatically();
+
+            infos.Add(info);
 
             Statuses[Status.Lv] += 1;
 
-            this.Statuses[Status.MaxHP] += info.UppedHP;
+            Statuses[Status.MaxHP] += info.UppedHP;
             uppedHPSum += info.UppedHP;
 
             Statuses[Status.MaxSP] += info.UppedSP;
@@ -244,15 +240,28 @@ public class Ally : Unit
             }
             if (info.Skill != null && info.Skill.SkillName != SkillName.無し)
             {
-                AddSkillToNPC(info.Skill);
-                acquiredSkillTexts.Add(ConvertSkillNameToString(info.Skill.SkillName));
+                var a = info.Skill.SkillName;
+                var learned = skills.Find(s => s.SkillName == a);
+                if (learned != null)
+                {
+                    learned.SkillLevel += 1;
+                    acquiredSkillTexts.Add($"{ConvertSkillNameToString(learned.SkillName)}:" +
+                    $"Lv{learned.SkillLevel}");
+                }
+                else
+                {
+                    AddSkillToNPC(info.Skill);
+                    acquiredSkillTexts.Add($"{ConvertSkillNameToString(info.Skill.SkillName)}:" +
+                    $"Lv{info.Skill.SkillLevel}");
+                }
+
             }
         }
 
         string message = "";
 
         message += $"{Name}がレベルアップ!\n";
-        message += $"Lv {Statuses[Status.Lv] - lvUpStack} > {Statuses[Status.Lv]}";
+        message += $"Lv {Statuses[Status.Lv] - lvUpStack} > {Statuses[Status.Lv]}\n";
         message += $"HP+{uppedHPSum} SP+{uppedSPSum}\n";
 
         //ステータス情報
@@ -267,16 +276,26 @@ public class Ally : Unit
         message += "\n";
 
         //スキル情報
-        string skillText = "";
+        //string skillText = "";
         if (acquiredSkillTexts.Count > 0)
         {
             message += "スキルを習得：\n";
         }
         foreach (string s in acquiredSkillTexts)
         {
-            skillText += s;
+            //skillText += s;
             message += $"{s}\n";
         }
+
+        //if (uppedSkillTexts.Count > 0)
+        //{
+        //    message += "スキルLvが上昇：\n";
+        //}
+        //foreach (string s in uppedSkillTexts)
+        //{
+        //    //skillText += s;
+        //    message += $"{s}\n";
+        //}
 
         lvUpStack = 0;
 
@@ -303,7 +322,15 @@ public class Ally : Unit
         }
         if (info.Skill != null && info.Skill.SkillName != SkillName.無し)
         {
-            AddSkillToNPC(info.Skill);
+            if (skills.Contains(info.Skill))
+            {
+                var learned = skills.Find(s => s == info.Skill);
+                learned.SkillLevel += 1;
+            }
+            else
+            {
+                AddSkillToNPC(info.Skill);
+            }
         }
     }
 
@@ -371,18 +398,20 @@ public class Ally : Unit
     /// <returns></returns>
     public LvUpInformation GetLvUpBonusAutomatically()
     {
-        var info = new LvUpInformation();
+        LvUpInformation info = new LvUpInformation();
 
-        int uppedHP = UnityEngine.Random.Range(0, lvUpHps.Count);
+        int uppedHP = lvUpHps.GetAtRandom();
+        int uppedSP = LvUpSps.GetAtRandom();
+
         info.UppedHP = uppedHP;
-
-        int uppedSP = UnityEngine.Random.Range(0, lvUpSps.Count);
         info.UppedSP = uppedSP;
 
         int random = UnityEngine.Random.Range(0, 100);
 
-        Skill skill = GetSkillRandomly();
+        //Skill skill = GetSkillRandomly();
+        var skill = LvUpSkillRandomly();
 
+        //40%でスキルを覚える
         //ステータスアップ
         if (random > statusUpPer || skill == null)
         {
@@ -402,7 +431,6 @@ public class Ally : Unit
     public Skill GetSkillRandomly()
     {
         var skillOptions = new List<Skill>();
-        Debug.Log(Job);
         foreach (Skill s in gameController.SkillGenerator.SkillInfos)
         {
             if (s.JobType == Job)
@@ -423,7 +451,37 @@ public class Ally : Unit
         {
             return null;
         }
+    }
 
+
+    public Skill LvUpSkillRandomly()
+    {
+        var skillOptions = new List<Skill>();
+        foreach (Skill s in gameController.SkillGenerator.SkillInfos)
+        {
+            if (s.JobType == Job)
+            {
+                if (skills.Contains(s))
+                {
+                    var learned = skills.Find(sk => sk == s);
+                    if (learned != null && learned.SkillLevel > 2)
+                    {
+                        break;
+                    }
+                }
+                Skill skill = gameController.SkillGenerator.Generate(s.Name);
+                skillOptions.Add(skill);
+            }
+        }
+        if (skillOptions.Count > 0)
+        {
+            Skill acquired = skillOptions.GetAtRandom();
+            return acquired;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /// <summary>
@@ -485,10 +543,6 @@ public class Ally : Unit
         {
             equipDef += g.GetAddedValue();
         }
-
-
-
-
         return (int)(def * (1.2 + lv * 0.020) + equipDef);
     }
 
@@ -629,65 +683,10 @@ public class Ally : Unit
 
     }
 
-
-    public string SetDamage(int damage = 0, bool isHit = true)
-    {
-        string message = "";
-
-        if (!IsDeath)
-        {
-            //状態異常によるダメージの判定
-            if (Ailments.ContainsKey(Ailment.sleep))
-            {
-                damage = (int)(damage * 1.5);
-            }
-
-            //ダメージ、回復はマイナス
-            Statuses[EnumHolder.Status.currentHP] -= damage;
-            //ダメージエフェクト
-            gameController.AllyManager.DamageEffect(this, damage, isHit);
-
-            //ダメージテキスト
-            if (damage > 0)
-            {
-                message += $"{Name}は{damage}のダメージを受けた\n";
-            }
-            else if (damage < 0)
-            {
-                if (Statuses[Status.currentHP] >= Statuses[Status.MaxHP])
-                {
-                    message += $"{Name}のHPが全回復した\n";
-                }
-                else
-                {
-                    message += $"{Name}のHPが{-damage}回復した\n";
-                }
-            }
-
-            //死亡確認
-            message += CheckDeath();
-            CheckMaxHP();
-
-            //ダメージを受けたときに解除される状態の判定
-            if (damage > 0)
-            {
-                message += CheckRemove();
-            }
-        }
-
-
-        return message;
-    }
-
-    public void SetDamageEffect()
-    {
-
-    }
-
-    public override List<Item> GetItems()
-    {
-        return Items;
-    }
+    //public override List<Item> GetItems()
+    //{
+    //    return Items;
+    //}
 
     //TODO:直す
     public void AddItem(Item item)
@@ -704,28 +703,6 @@ public class Ally : Unit
         }
 
         this.Items.Add(item);
-    }
-
-    public string CheckDeath()
-    {
-        string message = "";
-        if (Statuses[EnumHolder.Status.currentHP] < 1)
-        {
-            Statuses[EnumHolder.Status.currentHP] = 0;
-            message += $"{Name}は死亡した\n";
-            //死亡;
-            IsDeath = true;
-        }
-        return message;
-    }
-
-    public void CheckMaxHP()
-    {
-        //最大体力
-        if (Statuses[EnumHolder.Status.currentHP] >= Statuses[EnumHolder.Status.MaxHP])
-        {
-            Statuses[EnumHolder.Status.currentHP] = Statuses[EnumHolder.Status.MaxHP];
-        }
     }
 
     public void DiscardItems(List<Item> discardItems)

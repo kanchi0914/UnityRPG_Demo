@@ -100,7 +100,6 @@ public class AllyGenerator
         }
 
         return ally;
-
         
     }
 

@@ -113,7 +113,9 @@ public class SkillGenerator2
         }
 
         //説明文
-        skill.Description = data[6];
+        var splittedDes = data[6].Split('/');
+        skill.DescriptionMaster = splittedDes[0];
+        if (splittedDes.Length > 1) skill.DescriptionByLv = splittedDes[1].Split('|');
 
         //使用メッセージ
         skill.Message1 = data[7];

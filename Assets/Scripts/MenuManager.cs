@@ -504,8 +504,10 @@ public class MenuManager : MonoBehaviour
                         c.a = 0.3f;
                         backGround.color = c;
                         Skill skill = ally.skills[j];
-                        string skillName = Enum.GetName(typeof(SkillName), skill.SkillName);
-                        skillButtonPanels[j].name = skill.Name;
+                        //string skillName = Enum.GetName(typeof(SkillName), skill.SkillName);
+                        string skillName = skill.DisplayedSkillName;
+                        //skillButtonPanels[j].name = skill.Name;
+                        skillButtonPanels[j].name = Enum.GetName(typeof(SkillName), skill.SkillName);
                         skillNameText.text = skillName;
                         description.text = skill.Description;
                         if (skill.SkillType == SkillType.active)
@@ -767,9 +769,25 @@ public class MenuManager : MonoBehaviour
         {
             //gameController.Situation = "use_skill";
             //gameController.WaitClick("Ally");
-            gameController.CallBackManager.SetNewCallBacks(gameController.CallBackManager
-                .OnClickedAllyBySkillTargettingInField,
-                gameController.CallBackManager.OnCanceledAllySelecting, "Ally");
+            //gameController.CallBackManager.SetNewCallBacks(gameController.CallBackManager
+            //    .OnClickedAllyBySkillTargettingInField,
+            //    gameController.CallBackManager.OnCanceledAllySelecting, "Ally");
+
+            gameController.CallBackManager.SetNewCallBacks((string id) => 
+            {
+                gameController.SetSelectedAllyID(id);
+                gameController.UseSkillInField();
+            },
+            () =>
+            {
+                //gameController.SelectWhoPanel.gameObject.SetActive(false);
+                //gameController.InoperablePanelUnderAlly.gameObject.SetActive(false);
+                gameController.CallBackManager.ClearCallBack();
+            },
+            "Ally"
+            );
+
+
         }
         else
         {

@@ -29,18 +29,22 @@ public static class GameSettings
         return (per > random);
     }
 
-    //状態異常の付与
-    //statusは成功確率の依存ステータス
-    public static string SetAilmentInProb(Unit fromUnit, Unit toUnit, Ailment ailment)
+    /// <summary>
+    /// 状態異常の確率付与
+    /// </summary>
+    /// <param name="fromUnit"></param>
+    /// <param name="toUnit"></param>
+    /// <param name="ailment"></param>
+    /// <param name="value">状態異常の確率,％表示</param>
+    /// <returns></returns>
+    public static string SetAilmentInProb(Unit fromUnit, Unit toUnit, Ailment ailment, int value = 100)
     {
         string message = "";
-
         if (!toUnit.Ailments.ContainsKey(ailment))
         {
             int random = UnityEngine.Random.Range(0, 100);
 
-            int per = (fromUnit.Statuses[Status.Lv] * fromUnit.Statuses[Status.INT]) /
-                (toUnit.Statuses[Status.Lv] * toUnit.Statuses[Status.INT] * 2) * 100;
+            int per = value - ((toUnit.AilmentResists[ailment] / 2) * value);
 
             if (per > random)
             {
@@ -54,18 +58,67 @@ public static class GameSettings
         return message;
     }
 
-    //スキルによる回復値
-    public static int CalculateHealingValue(int skillValue, Unit fromUnit)
+    /// <summary>
+    /// スキル効果値による状態異常付与
+    /// (自分のLUK * Lv / 相手のLUK * Lv) * Value
+    /// </summary>
+    /// <param name="fromUnit"></param>
+    /// <param name="toUnit"></param>
+    /// <param name="ailment"></param>
+    /// <param name="skill"></param>
+    /// <returns></returns>
+    public static string SetAilmentBySkillValue(Unit fromUnit, Unit toUnit, Ailment ailment, Skill skill)
+    {
+        string message = "";
+
+        int value = skill.ValueByLv[skill.SkillLevel];
+
+        int per = (fromUnit.Statuses[Status.Lv] * fromUnit.Statuses[Status.LUK]) /
+                (toUnit.Statuses[Status.Lv] * toUnit.Statuses[Status.LUK]) * (value / 100);
+        SetAilmentInProb(fromUnit, toUnit, ailment, per);
+        return message;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="skillValue"></param>
+    /// <param name="fromUnit"></param>
+    /// <returns></returns>
+    public static int CalculateSkillHealingValue(int skillValue, Unit fromUnit)
     {
         int healValue = 0;
         int intel = fromUnit.Statuses[Status.INT];
         float random = UnityEngine.Random.Range(0.90f, 1.10f);
-        healValue = (int)((intel * skillValue / 100) * random + skillValue / 10);
+        healValue = (int)((intel * skillValue / 10) * random + skillValue);
         if (healValue > MaxHPValue) healValue = MaxHPValue;
-        //精神値による回復量変化に加えて、10％の基本回復量をプラス
         return healValue;
     }
 
+    /// <summary>
+    /// スキルの効果値に応じてHPを回復
+    /// </summary>
+    /// <param name="fromUnit"></param>
+    /// <param name="toUnit"></param>
+    /// <param name="ailment"></param>
+    /// <param name="skill"></param>
+    /// <returns></returns>
+    public static string SetHealingBySkill(Unit fromUnit, Unit toUnit, Skill skill)
+    {
+        int healValue = CalculateSkillHealingValue(skill.ValueByLv[skill.SkillLevel], fromUnit);
+        return SetDamageByAbility(fromUnit, toUnit, skill, -healValue);
+    }
+
+
+    /// <summary>
+    /// ダメージ計算
+    /// ここでは数値を返すだけで、変化はさせない
+    /// </summary>
+    /// <param name="skill"></param>
+    /// <param name="units"></param>
+    /// <param name="fromUnit"></param>
+    /// <param name="toUnit"></param>
+    /// <returns></returns>
     public static int CalculateDamage(Skill skill, List<Unit> units, Unit fromUnit, Unit toUnit)
     {
         isCovered = false;
@@ -75,15 +128,10 @@ public static class GameSettings
         int offensiveP, defensiveP;
         int defaultOffensiveP;
         int lv = fromUnit.Statuses[Status.Lv];
-        //int def = toUnit.Statuses[Status.DEF];
-        //int mnt = toUnit.Statuses[Status.Lv]; ;
 
         int damage;
         float random = UnityEngine.Random.Range(0.90f, 1.10f);
 
-        //ダメージ計算式
-        //引き算による通常ダメージと、
-        //  (0以下切り捨て)((攻撃力)- (防御力)) + (攻撃力)/(防御力)　* (Lv * 0.2 + 0.2)
         if (skill.AttackType == AttackType.physics)
         {
             offensiveP = fromUnit.GetOffensivePower();
@@ -97,22 +145,9 @@ public static class GameSettings
 
         defaultOffensiveP = offensiveP;
 
-        //種族による威力補正
-        if (toUnit.GetType() == typeof(Enemy))
-        {
-            Enemy enemy = toUnit as Enemy;
-            Ally ally = fromUnit as Ally;
-            foreach (EnemyType e in enemy.EnemyTypes)
-            {
-                if (ally.EquippedWeapon.Effectivenesses.ContainsKey(e))
-                {
-                    offensiveP += defaultOffensiveP * ally.EquippedWeapon.Effectivenesses[e];
-                }
-            }
-        }
-
-        //ダメージ計算
-
+        //基本ダメージ計算
+        //引き算による通常ダメージと、
+        //  (0以下切り捨て)((攻撃力)- (防御力)) + (攻撃力)/(防御力)　* (Lv * 0.2 + 0.2)
         if (skill.AttackType == AttackType.physics)
         {
             damage = (int)((skill.GetSkillPower() * random / 100)
@@ -127,10 +162,92 @@ public static class GameSettings
                 + (offensiveP / defensiveP) * (lv * 0.02 + 0.2))));
         }
         else damage = 0;
-
         if (damage < 0) damage = 0;
 
-        //属性によるダメージ増減------------------------------------------------------------------------
+        //種族特攻
+        damage = CalculateEnemyTypeDamage(damage, skill, fromUnit, toUnit);
+
+        //状態異常によるダメージ増減
+        damage = CalculateAilmentDamage(damage, toUnit);
+
+        //相手の属性耐性によるダメージ増減
+        damage = CalculateAttributionDamage(damage, skill, fromUnit, toUnit);
+
+        //防御時のダメージ増減
+        damage = CalculateGuardedDamage(damage, toUnit);
+
+        damage = CalculateGuardedDamage(damage, toUnit);
+
+        if (damage < 1) damage = 1;
+
+        return damage;
+    }
+
+    /// <summary>
+    /// Unitクラスのメソッドを呼び出し、パラメータを変化させる
+    /// </summary>
+    /// <param name="fromUnit"></param>
+    /// <param name="toUnit"></param>
+    /// <param name="skill"></param>
+    /// <param name="damage"></param>
+    /// <returns></returns>
+    public static string SetDamageByAbility(Unit fromUnit, Unit toUnit, Skill skill, int damage)
+    {
+
+        string message = "";
+
+        if (!toUnit.IsDeath)
+        {
+            bool isHit = true;
+            if (skill.AttackType == AttackType.physics)
+            {
+                isHit = CheckHit(fromUnit, toUnit);
+            }
+            //攻撃が命中するなら
+            if (isHit)
+            {
+                message += toUnit.SetDamage(damage);
+                message += CheckAdditionalAilment(skill, fromUnit, toUnit);
+
+            }
+            else
+            {
+                message += $"{toUnit.Name}には当たらなかった！\n";
+                toUnit.SetDamage(isHit: false);
+            }
+        }
+        return message;
+    }
+
+
+    public static int CalculateEnemyTypeDamage(int damage, Skill skill, Unit fromUnit, Unit toUnit)
+    {
+        if (toUnit.GetType() == typeof(Enemy))
+        {
+            int rate = 100;
+            Enemy enemy = toUnit as Enemy;
+            Ally ally = fromUnit as Ally;
+            foreach (EnemyType e in enemy.EnemyTypes)
+            {
+                if (ally.EquippedWeapon.Effectivenesses.ContainsKey(e))
+                {
+                    rate += ally.EquippedWeapon.Effectivenesses[e];
+                }
+            }
+
+            damage *= rate;
+            return damage;
+        }
+        else
+        {
+            return damage;
+        }
+    }
+
+
+    public static int CalculateAttributionDamage(int damage, Skill skill, Unit fromUnit, Unit toUnit)
+    {
+        //属性によるダメージ増減
         HashSet<Attribution> attributions = new HashSet<Attribution>();
         //スキルの属性
         attributions.Add(skill.Attribution);
@@ -142,7 +259,7 @@ public static class GameSettings
         }
 
         //武器による属性
-        if (fromUnit.UnitType1 == Unit.UnitType.ally)
+        if (fromUnit.GetType() == typeof(Ally))
         {
             //Ally ally = (Ally)fromUnit;
             ////武器の属性
@@ -157,7 +274,6 @@ public static class GameSettings
             //}
         }
 
-        //相手の属性耐性
         foreach (Attribution a in attributions)
         {
             if (toUnit.AttributionResists[a] == 2)
@@ -177,22 +293,15 @@ public static class GameSettings
                 damage -= (int)(damage * 1.0);
             }
         }
+        return damage;
+    }
 
-        //状態異常によるダメージの判定
+    public static int CalculateAilmentDamage(int damage, Unit toUnit)
+    {
         if (toUnit.Ailments.ContainsKey(Ailment.sleep))
         {
             damage = (int)(damage * 1.5);
         }
-
-        //============================================================
-        //防御時のダメージ
-        //============================================================
-        damage = CalculateGuardedDamage(damage, toUnit);
-
-        damage = CalculateGuardedDamage(damage, toUnit);
-
-        if (damage < 1) damage = 1;
-
         return damage;
     }
 
@@ -214,6 +323,12 @@ public static class GameSettings
         return message;
     }
 
+    /// <summary>
+    /// 防御時のダメージを返す
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <param name="toUnit"></param>
+    /// <returns></returns>
     public static int CalculateGuardedDamage(int damage, Unit toUnit)
     {
         if (toUnit.CurrentCommand.Ability.GetType() == typeof(Skill))
@@ -255,118 +370,77 @@ public static class GameSettings
         return damage;
     }
 
-    public static string SetDamageByAbility(Unit fromUnit, Unit toUnit, Skill skill, int damage, bool isMessage = true)
-    {
 
+    public static string CheckAdditionalAilment(Skill skill, Unit fromUnit, Unit toUnit)
+    {
         string message = "";
 
-        if (!toUnit.IsDeath)
+        //状態異常の追加効果
+        Dictionary<Ailment, int> additionalAilments = new Dictionary<Ailment, int>();
+
+        //物理攻撃なら、武器の効果を追加
+        if (skill.AttackType == AttackType.physics)
         {
-            bool isHit = true;
-            if (skill.AttackType == AttackType.physics)
+            if (fromUnit.UnitType1 == Unit.UnitType.ally)
             {
-                isHit = CheckHit(fromUnit, toUnit);
-            }
-
-            //攻撃が命中するなら
-            if (isHit)
-            {
-                if (isMessage)
+                //武器の追加効果
+                Ally ally = (Ally)fromUnit;
+                foreach (KeyValuePair<Ailment, int> kvp in ally.EquippedWeapon.Ailments)
                 {
-                    if (toUnit.GetType() == typeof(Ally))
+                    if (kvp.Value > 0)
                     {
-                        Ally ally = toUnit as Ally;
-                        message += ally.SetDamage(damage);
+                        additionalAilments.Add(kvp.Key, kvp.Value);
                     }
-                    else
-                    {
-                        Enemy enemy = toUnit as Enemy;
-                        message += enemy.SetDamage(damage);
-                    }
-                }
-
-                //状態異常の追加効果
-                //HashSet<Ailment> additionalAilments = new HashSet<Ailment>();
-                Dictionary<Ailment, int> additionalAilments = new Dictionary<Ailment, int>();
-
-                //物理攻撃なら、武器の効果を追加
-                if (skill.AttackType == AttackType.physics)
-                {
-                    if (fromUnit.UnitType1 == Unit.UnitType.ally)
-                    {
-                        //武器の追加効果
-                        Ally ally = (Ally)fromUnit;
-                        foreach (KeyValuePair<Ailment, int> kvp in ally.EquippedWeapon.Ailments)
-                        {
-                            if (kvp.Value > 0)
-                            {
-                                additionalAilments.Add(kvp.Key, kvp.Value);
-                            }
-                        }
-                    }
-                }
-
-                //スキルの追加効果
-                //if (skill.AdditionalAilment != Ailment.nothing)
-                //{
-                //    additionalAilments.Add(skill.AdditionalAilment);
-                //}
-
-                //状態異常の付与判定
-                foreach (KeyValuePair<Ailment, int> kvp in additionalAilments)
-                {
-                    if (!toUnit.Ailments.ContainsKey(kvp.Key))
-                    {
-                        int random = UnityEngine.Random.Range(0, 100);
-                        //int luk = fromUnit.Statuses[Status.LUK] * 2;
-                        //double mnt = (toUnit.Statuses[Status.MNT] + toUnit.Statuses[Status.LUK]) * 5;
-                        //int per = (int)((luk / mnt) * 100);
-                        int per = kvp.Value;
-
-                        if (toUnit.AilmentResists[kvp.Key] == 2)
-                        {
-                            per = 0;
-                        }
-                        else if (toUnit.AilmentResists[kvp.Key] == 1)
-                        {
-                            per = per / 2;
-                        }
-                        else if (toUnit.AilmentResists[kvp.Key] == -1)
-                        {
-                            per = (int)(per * 1.5);
-                        }
-                        else if (toUnit.AilmentResists[kvp.Key] == -2)
-                        {
-                            per = per * 2;
-                        }
-
-                        if (per > random)
-                        {
-                            message += $"{toUnit.Name}は{kvp.Key.GetAilmentName()}状態になった！\n";
-                            toUnit.SetAilment(kvp.Key);
-                        }
-                        else
-                        {
-
-                        }
-                    }
-                }
-            }
-            else
-            {
-                message += $"{toUnit.Name}には当たらなかった！\n";
-                if (toUnit.UnitType1 == Unit.UnitType.ally)
-                {
-                    Ally ally = (Ally)toUnit;
-                    ally.SetDamage(isHit: false);
-                }
-                else
-                {
-                    Enemy enemy = (Enemy)toUnit;
-                    enemy.SetDamage(isHit: false);
                 }
             }
         }
+
+        //スキルの追加効果
+        //if (skill.AdditionalAilment != Ailment.nothing)
+        //{
+        //    additionalAilments.Add(skill.AdditionalAilment);
+        //}
+
+        //状態異常の付与判定
+        foreach (KeyValuePair<Ailment, int> kvp in additionalAilments)
+        {
+            if (!toUnit.Ailments.ContainsKey(kvp.Key))
+            {
+                int random = UnityEngine.Random.Range(0, 100);
+                //int luk = fromUnit.Statuses[Status.LUK] * 2;
+                //double mnt = (toUnit.Statuses[Status.MNT] + toUnit.Statuses[Status.LUK]) * 5;
+                //int per = (int)((luk / mnt) * 100);
+                int per = kvp.Value;
+
+                if (toUnit.AilmentResists[kvp.Key] == 2)
+                {
+                    per = 0;
+                }
+                else if (toUnit.AilmentResists[kvp.Key] == 1)
+                {
+                    per = per / 2;
+                }
+                else if (toUnit.AilmentResists[kvp.Key] == -1)
+                {
+                    per = (int)(per * 1.5);
+                }
+                else if (toUnit.AilmentResists[kvp.Key] == -2)
+                {
+                    per = per * 2;
+                }
+
+                if (per > random)
+                {
+                    message += $"{toUnit.Name}は{kvp.Key.GetAilmentName()}状態になった！\n";
+                    toUnit.SetAilment(kvp.Key);
+                }
+                else
+                {
+
+                }
+            }
+        }
+
         return message;
     }
 

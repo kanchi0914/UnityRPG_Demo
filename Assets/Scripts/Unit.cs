@@ -9,6 +9,9 @@ using System.Linq;
 
 public class Unit
 {
+
+    private GameController gameController;
+
     private Sprite image;
 
     private bool isClickable = false;
@@ -138,7 +141,7 @@ public class Unit
 
     //private string unitType = "enemy";
 
-    public List<Skill> skills;
+    public List<Skill> skills = new List<Skill>();
 
     private bool isDeath = false;
 
@@ -161,6 +164,12 @@ public class Unit
         {EnumHolder.Status.LUK, 10}
     };
 
+
+    public Unit(GameController gameController)
+    {
+        this.gameController = gameController;
+    }
+
     //HPの％を返す
     public float GetPerHP()
     {   
@@ -174,35 +183,6 @@ public class Unit
         return Math.Min(1, Math.Max(0, per));
     }
 
-    public Unit()
-    {
-        skills = new List<Skill>();
-        tempAGI = Statuses[EnumHolder.Status.AGI];
-    }
-
-    //ここを使う
-    //public void SetAllStatus(string ID = "", string Name = "",
-    //    int Lv = 1, int maxHP = 50, int maxSP = 50, int str = 10, int def = 10, int intel = 10,
-    //    int mnt = 10, int tec = 10, int agi = 10, int luk = 10)
-    //{
-    //    SetID(ID);
-    //    SetName(Name);
-
-    //    SetStatus(EnumHolder.Status.Lv, Lv);
-    //    SetStatus(EnumHolder.Status.MaxHP, maxHP);
-    //    SetStatus(EnumHolder.Status.currentHP, maxHP);
-    //    SetStatus(EnumHolder.Status.MaxSP, maxSP);
-    //    SetStatus(EnumHolder.Status.currentSP, maxSP);
-    //    //SetStatus(StatusKey.currentHP maxHP);
-    //    //SetStatus("currentSP", maxSP);
-    //    SetStatus(EnumHolder.Status.STR, str);
-    //    SetStatus(EnumHolder.Status.DEF, def);
-    //    SetStatus(EnumHolder.Status.INT, intel);
-    //    SetStatus(EnumHolder.Status.MNT, mnt);
-    //    SetStatus(EnumHolder.Status.TEC, tec);
-    //    SetStatus(EnumHolder.Status.AGI, agi);
-    //    SetStatus(EnumHolder.Status.LUK, luk);
-    //}
 
     //IDが等しければ同じ
     public override bool Equals(object obj)
@@ -216,10 +196,117 @@ public class Unit
         return (this.ID1 == ID1);
     }
 
-    //allyクラス、enemyクラスのメソッドが呼び出される
-    public virtual void SetDamage(int damage)
-    {
+    ////allyクラス、enemyクラスのメソッドが呼び出される
+    //public virtual void SetDamage(int damage)
+    //{
 
+    //}
+
+    /// <summary>
+    /// ダメージの数値を受け取り、実際のHPを変化させ、メッセージを返す。
+    /// </summary>
+    /// <param name="damage">ダメージの数値。回復する場合はマイナスの値を与える</param>
+    /// <param name="isHit">命中しない場合はfalse</param>
+    /// <returns></returns>
+    public string SetDamage(int damage = 0, bool isHit = true)
+    {
+        string message = "";
+
+        if (!IsDeath)
+        {
+            //状態異常によるダメージの判定
+            if (Ailments.ContainsKey(Ailment.sleep))
+            {
+                damage = (int)(damage * 1.5);
+            }
+
+            //ダメージ、回復はマイナス
+            Statuses[EnumHolder.Status.currentHP] -= damage;
+
+            //ダメージエフェクト
+            if (this.GetType() == typeof(Ally))
+            {
+                gameController.AllyManager.DamageEffect(this, damage, isHit);
+            }
+            else
+            {
+                gameController.EnemyManager.SetDamageEffect(this, damage, isHit);
+            }
+
+            //ダメージテキスト
+            if (damage > 0)
+            {
+                if (this.GetType() == typeof(Ally))
+                {
+                    message += $"{Name}は{damage}のダメージを受けた\n。";
+                }
+                else
+                {
+                    message += $"{Name}に{damage}のダメージを与えた\n。";
+                }
+                
+            }
+            //回復
+            else if (damage < 0)
+            {
+                if (Statuses[Status.currentHP] >= Statuses[Status.MaxHP])
+                {
+                    message += $"{Name}のHPが全回復した\n。";
+                }
+                else
+                {
+                    message += $"{Name}のHPが{-damage}回復した\n。";
+                }
+            }
+
+            //死亡確認
+            message += CheckDeath();
+
+            //最大HPの確認
+            CheckMaxHP();
+
+            //ダメージを受けたときに解除される状態の判定
+            if (damage > 0)
+            {
+                message += CheckRemove();
+            }
+        }
+
+        return message;
+    }
+
+    /// <summary>
+    /// 死亡確認し、メッセージを返す
+    /// </summary>
+    /// <returns></returns>
+    public string CheckDeath()
+    {
+        string message = "";
+        if (Statuses[EnumHolder.Status.currentHP] < 1)
+        {
+            Statuses[EnumHolder.Status.currentHP] = 0;
+            if (this.GetType() == typeof(Ally))
+            {
+                message += $"{Name}は死亡した\n!";
+            }
+            else
+            {
+                message += $"{Name}を倒した\n!";
+            }
+           
+            //死亡;
+            IsDeath = true;
+        }
+        return message;
+    }
+
+    public void CheckMaxHP()
+    {
+        //最大体力
+        if (Statuses[EnumHolder.Status.currentHP] >= Statuses[EnumHolder.Status.MaxHP])
+        {
+            Statuses[EnumHolder.Status.currentHP] = Statuses[EnumHolder.Status.MaxHP];
+        }
     }
 
     //装備を合わせた物理攻撃力
@@ -236,43 +323,24 @@ public class Unit
     //装備を合わせた物理防御力
     public virtual int GetPhysicalDefensivePower()
     {
-        //int lv = GetStatus(EnumHolder.Status.Lv);
-        //int def = GetStatus(EnumHolder.Status.DEF);
-        //return (int)(def * (1.2 + lv * 0.05));
         return 0;
     }
 
     //装備を合わせた魔法防御力
     public virtual int GetMagicalDefensivePower()
     {
-        //int lv = GetStatus(EnumHolder.Status.Lv);
-        //int mnt = GetStatus(EnumHolder.Status.MNT);
-        //int def = GetStatus(EnumHolder.Status.DEF);
-        //int equipDef = 0;
-        //return (int)((def * 0.7 + mnt * 0.3) * (1.1 + lv * 0.05));
         return 0;
     }
 
     //装備を合わせた命中
     public virtual int GetHitProb()
     {
-        //int lv = GetStatus(StatusKey.Lv);
-        //int tec = GetStatus(EnumHolder.Status.TEC);
-        //int agi = GetStatus(EnumHolder.Status.AGI);
-        //int luk = GetStatus(EnumHolder.Status.LUK);
-        //int hitProb = (int)((tec * 2 + agi + luk) * (0.8));
-        //return hitProb;
         return 0;
     }
 
     //装備を合わせた回避
     public virtual int GetAvoidProb()
     {
-        //int lv = GetStatus(StatusKey.Lv);
-        //int agi = GetStatus(EnumHolder.Status.AGI);
-        //int luk = GetStatus(EnumHolder.Status.LUK);
-        //int hitProb = (int)((agi + luk) * (1.2));
-        //return hitProb;
         return 0;
     }
 
@@ -305,49 +373,12 @@ public class Unit
     public string Name { get => name; set => name = value; }
     public string ID1 { get => ID; set => ID = value; }
 
-    //public string GetID()
-    //{
-    //    return ID1;
-    //}
 
-    //public void SetID(string id)
-    //{
-    //    this.ID1 = id;
-    //}
-
-    //public string GetName()
-    //{
-    //    return Name;
-    //}
-
-    //public void SetName(string name)
-    //{
-    //    this.Name = name;
-    //}
-
-    ////バフ、デバフの効果を考慮
-    //public int GetStatus(Status key)
-    //{
-
-    //    return this.Statuses[key];
-    //}
-
-    //public void SetStatus(Status key, int value)
-    //{
-    //    this.Statuses[key] = value;
-    //}
-
-    //public void AddStatus(Status key, int value)
-    //{
-    //    this.Statuses[key] += value;
-    //}
-
-    //public List<string> GetCondition()
-    //{
-    //    return condition;
-    //}
-
-    //状態異常を食らった
+    /// <summary>
+    /// 状態状を付与し、メッセージを返す
+    /// </summary>
+    /// <param name="ailment"></param>
+    /// <returns></returns>
     public string SetAilment(Ailment ailment)
     {
         string message = "";
@@ -363,59 +394,81 @@ public class Unit
         return message;
     }
 
-    //public string SetAilmentInProb(Ailment ailment, int prob)
-    //{
-    //    //状態異常耐性
-    //    if (ailmentResists.ContainsKey(ailment))
-    //    {
-    //        if (ailmentResists[ailment] == 1)
-    //        {
-    //            prob /= 2;
-    //        }
-    //        if (ailmentResists[ailment] == 2)
-    //        {
-    //            prob = 0;
-    //        }
-    //        if (ailmentResists[ailment] == -1)
-    //        {
-    //            prob *= 2;
-    //        }
-    //        if (ailmentResists[ailment] == -2)
-    //        {
-    //            prob = 100;
-    //        }
-    //    }
 
-    //    string message = "";
-    //    int random = UnityEngine.Random.Range(0,100);
-    //    if (prob > random)
-    //    {
-    //        message += $"{Name}は{ailment.GetAilmentName()}状態になった！";
-    //    }
-    //    return message;
-    //}
-
-    //状態異常の回復
-    public string RecoverAilment(Ailment ailment)
+    /// <summary>
+    /// 状態異常を回復し、メッセージを返す
+    /// </summary>
+    /// <param name="ailment">状態異常</param>
+    /// <param name="prob">回復確率</param>
+    /// <returns></returns>
+    public string RecoverAilment(Ailment ailment = Ailment.nothing, int prob = 100)
     {
         string message = "";
-        Ailments.Remove(ailment);
-        message += $"{Name}の{ailment.GetAilmentName()}状態が回復した！";
-        return message;
-    }
-
-    public string RercoverAilmentInProb(Ailment ailment, int prob)
-    {
-        string message = "";
-        int random = UnityEngine.Random.Range(0, 100);
-        if (prob > random)
+        if (ailment == Ailment.nothing)
         {
-            message += $"{Name}の{ailment.GetAilmentName()}状態が回復した！";
+            if (Ailments.Count > 0)
+            {
+                Ailments.Clear();
+                message += $"{Name}の状態異常が回復した！";
+            }
+            else
+            {
+                message += $"しかし効果がなかった。";
+            }
+        }
+        else
+        {
+            if (Ailments.ContainsKey(ailment))
+            {
+                Ailments.Remove(ailment);
+                message += $"{Name}の{ailment.GetAilmentName()}状態が回復した！";
+
+            }
+            else
+            {
+                message += $"しかし効果がなかった。";
+            }
         }
         return message;
     }
 
-    //ダメージを受けたときの解除判定
+    //public string RercoverAilmentInProb(Ailment ailment, int prob)
+    //{
+    //    string message = "";
+    //    int random = UnityEngine.Random.Range(0, 100);
+    //    if (prob > random)
+    //    {
+    //        message += $"{Name}の{ailment.GetAilmentName()}状態が回復した！";
+    //    }
+    //    return message;
+    //}
+
+    /// <summary>
+    /// ユニットの死亡状態を回復し、メッセージを返す
+    /// </summary>
+    /// <returns></returns>
+    public string Resurrect()
+    {
+        string message = "";
+        if (IsDeath)
+        {
+            IsDeath = false;
+            int damage = Statuses[Status.MaxHP] / 2;
+            //SetDamageByAbility(fromUnit, toUnit, skill, damage, false);
+            SetDamage(-damage);
+            message += $"{Name}は復活した！";
+        }
+        else
+        {
+            message += "しかし効果がなかった。";
+        }
+        return message;
+    }
+
+    /// <summary>
+    /// ダメージを受けた時の解除判定
+    /// </summary>
+    /// <returns></returns>
     public string CheckRemove()
     {
         string message = "";

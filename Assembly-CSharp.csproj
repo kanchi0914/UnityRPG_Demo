@@ -60,175 +60,175 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\_Completed-Assets\Scripts\CompleteCameraController.cs" />
-    <Compile Include="Assets\_Completed-Assets\Scripts\CompletePlayerController.cs" />
-    <Compile Include="Assets\_Completed-Assets\Scripts\CompleteRotator.cs" />
-    <Compile Include="Assets\ButtonPressed.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleAudio.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModulePhysics2D.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleSprite.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUI.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
-    <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUtils.cs" />
-    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenAnimation.cs" />
-    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenProShortcuts.cs" />
-    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenTextMeshPro.cs" />
-    <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenTk2d.cs" />
-    <Compile Include="Assets\GameManager.cs" />
-    <Compile Include="Assets\init_SelectItemWindow.cs" />
-    <Compile Include="Assets\MessageTest.cs" />
-    <Compile Include="Assets\MovingDelta.cs" />
-    <Compile Include="Assets\NewBehaviourScript.cs" />
-    <Compile Include="Assets\scri.cs" />
-    <Compile Include="Assets\Scripts\Ability.cs" />
-    <Compile Include="Assets\Scripts\Ally.cs" />
-    <Compile Include="Assets\Scripts\AllyGenerator.cs" />
-    <Compile Include="Assets\Scripts\AllyManager.cs" />
-    <Compile Include="Assets\Scripts\BattleManager.cs" />
-    <Compile Include="Assets\Scripts\CallBackManager.cs" />
-    <Compile Include="Assets\Scripts\Cell.cs" />
-    <Compile Include="Assets\Scripts\CloseParent.cs" />
-    <Compile Include="Assets\Scripts\Command.cs" />
-    <Compile Include="Assets\Scripts\CommandDetailManager.cs" />
-    <Compile Include="Assets\Scripts\CommandManager.cs" />
-    <Compile Include="Assets\Scripts\CommandMessageManager.cs" />
-    <Compile Include="Assets\Scripts\CommandSelectManager.cs" />
-    <Compile Include="Assets\Scripts\ContentSetter.cs" />
-    <Compile Include="Assets\Scripts\DataLoader.cs" />
-    <Compile Include="Assets\Scripts\DiceManager.cs" />
-    <Compile Include="Assets\Scripts\DragObject.cs" />
-    <Compile Include="Assets\Scripts\Enemy.cs" />
-    <Compile Include="Assets\Scripts\EnemyClass.cs" />
-    <Compile Include="Assets\Scripts\EnemyGenerator.cs" />
-    <Compile Include="Assets\Scripts\EnemyManager.cs" />
-    <Compile Include="Assets\Scripts\EnumHolder.cs" />
-    <Compile Include="Assets\Scripts\Equipment.cs" />
-    <Compile Include="Assets\Scripts\Event.cs" />
-    <Compile Include="Assets\Scripts\EventHolder.cs" />
-    <Compile Include="Assets\Scripts\EventManager.cs" />
-    <Compile Include="Assets\Scripts\EventManager1.cs" />
-    <Compile Include="Assets\Scripts\FloorInfo.cs" />
-    <Compile Include="Assets\Scripts\GameController.cs" />
-    <Compile Include="Assets\Scripts\GameSettings.cs" />
-    <Compile Include="Assets\Scripts\Gem.cs" />
-    <Compile Include="Assets\Scripts\GemManager.cs" />
-    <Compile Include="Assets\Scripts\GeneralFuncController.cs" />
-    <Compile Include="Assets\Scripts\GetClickedGameObject.cs" />
-    <Compile Include="Assets\Scripts\Guard.cs" />
-    <Compile Include="Assets\Scripts\Item.cs" />
-    <Compile Include="Assets\Scripts\ItemEffector.cs" />
-    <Compile Include="Assets\Scripts\ItemGenerator.cs" />
-    <Compile Include="Assets\Scripts\ItemWindowManager.cs" />
-    <Compile Include="Assets\Scripts\ListExtension.cs" />
-    <Compile Include="Assets\Scripts\LoadEnemyData.cs" />
-    <Compile Include="Assets\Scripts\loadimage.cs" />
-    <Compile Include="Assets\Scripts\MapCreator.cs" />
-    <Compile Include="Assets\Scripts\MazeCreator.cs" />
-    <Compile Include="Assets\Scripts\MenuManager.cs" />
-    <Compile Include="Assets\Scripts\MessageManager.cs" />
-    <Compile Include="Assets\Scripts\NewBehaviourScript.cs" />
-    <Compile Include="Assets\Scripts\OptionsManager.cs" />
-    <Compile Include="Assets\Scripts\Pauser.cs" />
-    <Compile Include="Assets\Scripts\Player.cs" />
-    <Compile Include="Assets\Scripts\saveEnemyData.cs" />
-    <Compile Include="Assets\Scripts\Scaler.cs" />
-    <Compile Include="Assets\Scripts\scrollcamera.cs" />
-    <Compile Include="Assets\Scripts\Shop.cs" />
-    <Compile Include="Assets\Scripts\Skill.cs" />
-    <Compile Include="Assets\Scripts\SkillEffector.cs" />
-    <Compile Include="Assets\Scripts\SkillGenerator.cs" />
-    <Compile Include="Assets\Scripts\SkillGenerator2.cs" />
-    <Compile Include="Assets\Scripts\Test.cs" />
-    <Compile Include="Assets\Scripts\Testaaaaa.cs" />
-    <Compile Include="Assets\Scripts\TextController.cs" />
-    <Compile Include="Assets\Scripts\Unit.cs" />
-    <Compile Include="Assets\Scripts\Utility.cs" />
-    <Compile Include="Assets\Scripts\venturer.cs" />
-    <Compile Include="Assets\Scripts\Weapon.cs" />
-    <Compile Include="Assets\ScriptsBattle\CameraRange.cs" />
-    <Compile Include="Assets\testscript.cs" />
-    <Compile Include="Assets\textList.cs" />
-    <Compile Include="Assets\textList2.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
-    <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
-    <Compile Include="Assets\TypefaceAnimator\Scripts\TypefaceAnimator.cs" />
-    <Compile Include="Assets\uGUI-Effect-Tool-master\Assets\uGuiEffectTool\UIEffect\BlendColor.cs" />
-    <Compile Include="Assets\uGUI-Effect-Tool-master\Assets\uGuiEffectTool\UIEffect\GradientAlpha.cs" />
-    <Compile Include="Assets\uGUI-Effect-Tool-master\Assets\uGuiEffectTool\UIEffect\GradientColor.cs" />
-    <Compile Include="Assets\uGUI-Effect-Tool-master\Assets\uGuiEffectTool\UIEffect\UiEffectListPool.cs" />
-    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
-    <None Include="Assets\Resources\Scenario\scenario.txt" />
-    <None Include="Assets\Demigiant\DOTweenPro\readme.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
-    <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Anton OFL.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
-    <None Include="Assets\Resources\Scenario\waga.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
-    <None Include="Assets\Resources\aaa.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
-    <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald Bold - OFL.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
-    <None Include="Assets\Resources\Scenario\sss.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
-    <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\NotoSans - License.txt" />
-    <None Include="Assets\uGUI-Effect-Tool-master\ProjectSettings\ProjectVersion.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
-    <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
-    <None Include="Assets\data\testda.txt" />
-    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
-    <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\LiberationSans - OFL.txt" />
-    <None Include="Assets\Demigiant\DOTween\readme.txt" />
-    <None Include="Assets\Resources\enemyData.txt" />
-    <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Bangers - OFL.txt" />
-    <None Include="Assets\Demigiant\DemiLib\Core\DemiLib.xml" />
-    <None Include="Assets\Demigiant\readme_DOTweenPro.txt" />
+    <Compile Include="assets\_completed-assets\Scripts\CompleteCameraController.cs" />
+    <Compile Include="assets\_completed-assets\Scripts\CompletePlayerController.cs" />
+    <Compile Include="assets\_completed-assets\Scripts\CompleteRotator.cs" />
+    <Compile Include="assets\ButtonPressed.cs" />
+    <Compile Include="assets\demigiant\dotween\Modules\DOTweenModuleAudio.cs" />
+    <Compile Include="assets\demigiant\dotween\Modules\DOTweenModulePhysics.cs" />
+    <Compile Include="assets\demigiant\dotween\Modules\DOTweenModulePhysics2D.cs" />
+    <Compile Include="assets\demigiant\dotween\Modules\DOTweenModuleSprite.cs" />
+    <Compile Include="assets\demigiant\dotween\Modules\DOTweenModuleUI.cs" />
+    <Compile Include="assets\demigiant\dotween\Modules\DOTweenModuleUnityVersion.cs" />
+    <Compile Include="assets\demigiant\dotween\Modules\DOTweenModuleUtils.cs" />
+    <Compile Include="assets\demigiant\dotweenpro\DOTweenAnimation.cs" />
+    <Compile Include="assets\demigiant\dotweenpro\DOTweenProShortcuts.cs" />
+    <Compile Include="assets\demigiant\dotweenpro\DOTweenTextMeshPro.cs" />
+    <Compile Include="assets\demigiant\dotweenpro\DOTweenTk2d.cs" />
+    <Compile Include="assets\GameManager.cs" />
+    <Compile Include="assets\init_SelectItemWindow.cs" />
+    <Compile Include="assets\MessageTest.cs" />
+    <Compile Include="assets\MovingDelta.cs" />
+    <Compile Include="assets\NewBehaviourScript.cs" />
+    <Compile Include="assets\scri.cs" />
+    <Compile Include="assets\Scripts\Ability.cs" />
+    <Compile Include="assets\Scripts\Ally.cs" />
+    <Compile Include="assets\Scripts\AllyGenerator.cs" />
+    <Compile Include="assets\Scripts\AllyManager.cs" />
+    <Compile Include="assets\Scripts\BattleManager.cs" />
+    <Compile Include="assets\Scripts\CallBackManager.cs" />
+    <Compile Include="assets\Scripts\Cell.cs" />
+    <Compile Include="assets\Scripts\CloseParent.cs" />
+    <Compile Include="assets\Scripts\Command.cs" />
+    <Compile Include="assets\Scripts\CommandDetailManager.cs" />
+    <Compile Include="assets\Scripts\CommandManager.cs" />
+    <Compile Include="assets\Scripts\CommandMessageManager.cs" />
+    <Compile Include="assets\Scripts\CommandSelectManager.cs" />
+    <Compile Include="assets\Scripts\ContentSetter.cs" />
+    <Compile Include="assets\Scripts\DataLoader.cs" />
+    <Compile Include="assets\Scripts\DiceManager.cs" />
+    <Compile Include="assets\Scripts\DragObject.cs" />
+    <Compile Include="assets\Scripts\Enemy.cs" />
+    <Compile Include="assets\Scripts\EnemyClass.cs" />
+    <Compile Include="assets\Scripts\EnemyGenerator.cs" />
+    <Compile Include="assets\Scripts\EnemyManager.cs" />
+    <Compile Include="assets\Scripts\EnumHolder.cs" />
+    <Compile Include="assets\Scripts\Equipment.cs" />
+    <Compile Include="assets\Scripts\Event.cs" />
+    <Compile Include="assets\Scripts\EventHolder.cs" />
+    <Compile Include="assets\Scripts\EventManager.cs" />
+    <Compile Include="assets\Scripts\EventManager1.cs" />
+    <Compile Include="assets\Scripts\FloorInfo.cs" />
+    <Compile Include="assets\Scripts\GameController.cs" />
+    <Compile Include="assets\Scripts\GameSettings.cs" />
+    <Compile Include="assets\Scripts\Gem.cs" />
+    <Compile Include="assets\Scripts\GemManager.cs" />
+    <Compile Include="assets\Scripts\GeneralFuncController.cs" />
+    <Compile Include="assets\Scripts\GetClickedGameObject.cs" />
+    <Compile Include="assets\Scripts\Guard.cs" />
+    <Compile Include="assets\Scripts\Item.cs" />
+    <Compile Include="assets\Scripts\ItemEffector.cs" />
+    <Compile Include="assets\Scripts\ItemGenerator.cs" />
+    <Compile Include="assets\Scripts\ItemWindowManager.cs" />
+    <Compile Include="assets\Scripts\ListExtension.cs" />
+    <Compile Include="assets\Scripts\LoadEnemyData.cs" />
+    <Compile Include="assets\Scripts\loadimage.cs" />
+    <Compile Include="assets\Scripts\MapCreator.cs" />
+    <Compile Include="assets\Scripts\MazeCreator.cs" />
+    <Compile Include="assets\Scripts\MenuManager.cs" />
+    <Compile Include="assets\Scripts\MessageManager.cs" />
+    <Compile Include="assets\Scripts\NewBehaviourScript.cs" />
+    <Compile Include="assets\Scripts\OptionsManager.cs" />
+    <Compile Include="assets\Scripts\Pauser.cs" />
+    <Compile Include="assets\Scripts\Player.cs" />
+    <Compile Include="assets\Scripts\saveEnemyData.cs" />
+    <Compile Include="assets\Scripts\Scaler.cs" />
+    <Compile Include="assets\Scripts\scrollcamera.cs" />
+    <Compile Include="assets\Scripts\Shop.cs" />
+    <Compile Include="assets\Scripts\Skill.cs" />
+    <Compile Include="assets\Scripts\SkillEffector.cs" />
+    <Compile Include="assets\Scripts\SkillGenerator.cs" />
+    <Compile Include="assets\Scripts\SkillGenerator2.cs" />
+    <Compile Include="assets\Scripts\Test.cs" />
+    <Compile Include="assets\Scripts\Testaaaaa.cs" />
+    <Compile Include="assets\Scripts\TextController.cs" />
+    <Compile Include="assets\Scripts\Unit.cs" />
+    <Compile Include="assets\Scripts\Utility.cs" />
+    <Compile Include="assets\Scripts\venturer.cs" />
+    <Compile Include="assets\Scripts\Weapon.cs" />
+    <Compile Include="assets\ScriptsBattle\CameraRange.cs" />
+    <Compile Include="assets\testscript.cs" />
+    <Compile Include="assets\textList.cs" />
+    <Compile Include="assets\textList2.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\Benchmark01.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\Benchmark01_UGUI.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\Benchmark02.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\Benchmark03.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\Benchmark04.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\CameraController.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\ChatController.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\EnvMapAnimator.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\ObjectSpin.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\ShaderPropAnimator.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\SimpleScript.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\SkewTextExample.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TeleType.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TextConsoleSimulator.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TextMeshProFloatingText.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TextMeshSpawner.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMP_DigitValidator.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMP_ExampleScript_01.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMP_FrameRateCounter.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMP_PhoneNumberValidator.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMP_TextEventCheck.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMP_TextEventHandler.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMP_TextInfoDebugTool.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMP_TextSelector_A.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMP_TextSelector_B.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMP_UiFrameRateCounter.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\TMPro_InstructionOverlay.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\VertexColorCycler.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\VertexJitter.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\VertexShakeA.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\VertexShakeB.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\VertexZoom.cs" />
+    <Compile Include="assets\textmesh pro\examples &amp; extras\Scripts\WarpTextExample.cs" />
+    <Compile Include="assets\typefaceanimator\Scripts\TypefaceAnimator.cs" />
+    <Compile Include="assets\uGUI-Effect-Tool-master\assets\uguieffecttool\UIEffect\BlendColor.cs" />
+    <Compile Include="assets\uGUI-Effect-Tool-master\assets\uguieffecttool\UIEffect\GradientAlpha.cs" />
+    <Compile Include="assets\uGUI-Effect-Tool-master\assets\uguieffecttool\UIEffect\GradientColor.cs" />
+    <Compile Include="assets\uGUI-Effect-Tool-master\assets\uguieffecttool\UIEffect\UiEffectListPool.cs" />
+    <None Include="assets\textmesh pro\resources\LineBreaking Leading Characters.txt" />
+    <None Include="assets\resources\Scenario\scenario.txt" />
+    <None Include="assets\demigiant\dotweenpro\readme.txt" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="assets\textmesh pro\examples &amp; extras\Fonts\Anton OFL.txt" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMPro_Surface.cginc" />
+    <None Include="assets\resources\Scenario\waga.txt" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_SDF.shader" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMPro_Properties.cginc" />
+    <None Include="assets\resources\aaa.txt" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMPro.cginc" />
+    <None Include="assets\textmesh pro\examples &amp; extras\Fonts\Oswald Bold - OFL.txt" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="assets\resources\Scenario\sss.txt" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_Bitmap.shader" />
+    <None Include="assets\textmesh pro\examples &amp; extras\Fonts\NotoSans - License.txt" />
+    <None Include="assets\uGUI-Effect-Tool-master\ProjectSettings\ProjectVersion.txt" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_Sprite.shader" />
+    <None Include="assets\textmesh pro\resources\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="assets\textmesh pro\Sprites\EmojiOne Attribution.txt" />
+    <None Include="assets\data\testda.txt" />
+    <None Include="assets\textmesh pro\resources\LineBreaking Following Characters.txt" />
+    <None Include="assets\textmesh pro\examples &amp; extras\Fonts\LiberationSans - OFL.txt" />
+    <None Include="assets\demigiant\dotween\readme.txt" />
+    <None Include="assets\resources\enemyData.txt" />
+    <None Include="assets\textmesh pro\examples &amp; extras\Fonts\Bangers - OFL.txt" />
+    <None Include="assets\demigiant\demilib\core\DemiLib.xml" />
+    <None Include="assets\demigiant\readme_DOTweenPro.txt" />
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>C:/Users/user/Dropbox/advTest/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>C:/Users/user/Dropbox/advTest/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.DataPrivacy">
-      <HintPath>C:/Users/user/Dropbox/advTest/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b11/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -429,28 +429,43 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b11/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="DemiLib">
-      <HintPath>C:/Users/user/Dropbox/advTest/Assets/Demigiant/DemiLib/Core/DemiLib.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Assets/demigiant/demilib/core/DemiLib.dll</HintPath>
     </Reference>
     <Reference Include="DOTween">
-      <HintPath>C:/Users/user/Dropbox/advTest/Assets/Demigiant/DOTween/DOTween.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Assets/demigiant/dotween/DOTween.dll</HintPath>
     </Reference>
     <Reference Include="DOTweenPro">
-      <HintPath>C:/Users/user/Dropbox/advTest/Assets/Demigiant/DOTweenPro/DOTweenPro.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Assets/demigiant/dotweenpro/DOTweenPro.dll</HintPath>
     </Reference>
     <Reference Include="TextMeshPro-2017.3-Editor">
-      <HintPath>C:/Users/user/Dropbox/advTest/Assets/TextMesh Pro/Plugins/Editor DLL/TextMeshPro-2017.3-Editor.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Assets/textmesh pro/plugins/Editor DLL/TextMeshPro-2017.3-Editor.dll</HintPath>
     </Reference>
     <Reference Include="TextMeshPro-2017.3-Runtime">
-      <HintPath>C:/Users/user/Dropbox/advTest/Assets/TextMesh Pro/Plugins/Editor DLL/TextMeshPro-2017.3-Runtime.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Assets/textmesh pro/plugins/Editor DLL/TextMeshPro-2017.3-Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
-      <HintPath>C:/Users/user/Dropbox/advTest/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.StandardEvents">
-      <HintPath>C:/Users/user/Dropbox/advTest/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
-      <HintPath>C:/Users/user/Dropbox/advTest/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+    </Reference>
+    <Reference Include="TextMeshPro-2017.3-Runtime">
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/textmesh pro/plugins/Editor DLL/TextMeshPro-2017.3-Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="DemiLib">
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/demilib/core/DemiLib.dll</HintPath>
+    </Reference>
+    <Reference Include="TextMeshPro-2017.3-Editor">
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/textmesh pro/plugins/Editor DLL/TextMeshPro-2017.3-Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween">
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/dotween/DOTween.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTweenPro">
+      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/dotweenpro/DOTweenPro.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b11/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

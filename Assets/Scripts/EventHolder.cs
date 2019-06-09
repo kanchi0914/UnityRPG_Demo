@@ -34,6 +34,85 @@ public class EventHolder{
     {
         Event ev = new Event();
         //
+
+        #region "normal_shop"
+        events.Add(new Event()
+        {
+            //店の初期化自体はマップ生成時に行う
+            Id = "normal_shop",
+            Texts = new List<string>()
+            {
+                "冒険者たちは商人に出会った。"
+            },
+            OnEnd = (() =>
+            {
+                gameController.CurrentEvent = GetEventByID("normal_shop_option");
+            }),
+            //NextID = "normal_shop_option"
+        });
+        events.Add(new Event()
+        {
+            Id = "normal_shop_option",
+            TopText = "商人「いらっしゃい。安くしておくよ」",
+            OptionIDs = new List<(string, string)>()
+            {
+                ("アイテムを購入", "normal_shop_result01"),
+                ("アイテムを売却", "normal_shop_result02"),
+                ("強盗を行う(カルマ値+40)", "normal_shop_result03"),
+                ("立ち去る", "normal_shop_result04")
+            }
+            //NextID = "hungry_human_result"
+        });
+        events.Add(new Event()
+        {
+            Id = "normal_shop_result01",
+            Texts = new List<string>()
+            {
+            },
+            OnEnd = (() =>
+            {
+                gameController.CurrentCell.Shop.OpenBuyingWindow();
+                gameController.CurrentEvent = GetEventByID("normal_shop_option");
+            }),
+        });
+        events.Add(new Event()
+        {
+            Id = "normal_shop_result02",
+            Texts = new List<string>()
+            {
+            },
+            OnEnd = (() =>
+            {
+                gameController.CurrentCell.Shop.OpenSellingWindow();
+                gameController.CurrentEvent = GetEventByID("normal_shop_option");
+            }),
+        });
+        events.Add(new Event()
+        {
+            Id = "normal_shop_result03",
+            Texts = new List<string>()
+            {
+                "強盗を行った。"
+            },
+            OnEnd = (() =>
+            {
+                gameController.CurrentEvent = null;
+            })
+        });
+        events.Add(new Event()
+        {
+            Id = "normal_shop_result04",
+            Texts = new List<string>()
+            {
+                "さようなら。"
+            },
+            OnEnd = (() =>
+            {
+                gameController.CurrentEvent = null;
+            })
+        });
+        #endregion
+
         #region "hungly_human"
         events.Add(new Event()
         {
@@ -105,11 +184,11 @@ public class EventHolder{
             {
                 gameController.SetKarma(15);
             }),
-            ItemInfo = new Event.GotItemInfo
-            {
-                Num = 1,
-                Rarity = (0, 60)
-            }
+            //ItemInfo = new Event.GotItemInfo
+            //{
+            //    Num = 1,
+            //    Rarity = (0, 60)
+            //}
         });
         #endregion
         #region "holy_knights"
@@ -163,6 +242,7 @@ public class EventHolder{
             {
                 //gameController.SetFuel(-20);
                 //gameController.SetKarma(-20);
+                gameController.AllyManager.AddExps(1000);
                 gameController.CurrentEvent = null;
             })
         });
@@ -189,7 +269,7 @@ public class EventHolder{
             },
             OnEnd = (() =>
             {
-                GetRandomResult("holy_knights_result003");
+                gameController.CurrentEvent = GetRandomResult("holy_knights_result003");
             })
         });
         events.Add(new Event()
@@ -219,7 +299,7 @@ public class EventHolder{
         #endregion
     }
 
-    public void GetRandomResult(string id)
+    public Event GetRandomResult(string id)
     {
         var random = UnityEngine.Random.Range(0, 100);
         switch (id)
@@ -227,15 +307,14 @@ public class EventHolder{
             case "holy_knights_result003":
                 if (random > 30)
                 {
-                    gameController.CurrentEvent = GetEventByID("holy_knights_result004");
+                    return GetEventByID("holy_knights_result004");
                 }
                 else
                 {
-                    gameController.CurrentEvent = GetEventByID("holy_knights_result005");
+                    return GetEventByID("holy_knights_result005");
                 }
-                break;
             default:
-                break;
+                return null;
         }
     }
 

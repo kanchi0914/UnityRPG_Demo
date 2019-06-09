@@ -96,7 +96,7 @@ public class GameController : MonoBehaviour
 
     private (int x, int y) initialPos = (0, 0);
     private int mapSize = 11;
-    private Cell[,] cells = new Cell[11, 11];
+    public Cell[,] Cells = new Cell[11, 11];
     private int width = 2;
 
     private (int x, int y) playerPos = (0, 0);
@@ -131,12 +131,15 @@ public class GameController : MonoBehaviour
     public int Floor { get => floor; private set => floor = value; }
     public string AreaName { get => areaName; private set => areaName = value; }
     public Event CurrentEvent { get => currentEvent; set => currentEvent = value; }
-    public int Gold { get => gold; private set => gold = value; }
+    public int Gold { get; set; } = 1000;
     public int MaxItemNum { get => maxItemNum; private set => maxItemNum = value; }
     public string Situation { get => situation; set => situation = value; }
     public int SoulNum { get => soulNum; set => soulNum = value; }
     public int KarmaNum { get => karmaNum; set => karmaNum = value; }
     public int FuelNum { get => fuelNum; set => fuelNum = value; }
+
+    //現在のマス
+    public Cell CurrentCell { get => Cells[-Player.playerCoord.y, Player.playerCoord.x]; }
 
     private bool isShowedOptionWindow = false;
 
@@ -234,7 +237,7 @@ public class GameController : MonoBehaviour
 
     void InitMapCreator()
     {
-        mapCreator.Init(this, playerObject, mapSize, cells, width);
+        mapCreator.Init(this, playerObject, mapSize, Cells, width);
     }
 
     void InitManagerObjects()
@@ -294,23 +297,23 @@ public class GameController : MonoBehaviour
     #region "basic_method"
     public void Move(string s)
     {
-        if (s == "up" && cells[-(Player.playerCoord.y + 1), Player.playerCoord.x].GetCellType() != Cell.CellType.wall)
+        if (s == "up" && Cells[-(Player.playerCoord.y + 1), Player.playerCoord.x].GetCellType() != Cell.CellType.wall)
         {
             Player.playerCoord.y += 1;
         }
         else if (s == "down"
-             && cells[-(Player.playerCoord.y - 1), Player.playerCoord.x].GetCellType() != Cell.CellType.wall)
+             && Cells[-(Player.playerCoord.y - 1), Player.playerCoord.x].GetCellType() != Cell.CellType.wall)
         {
             Player.playerCoord.y -= 1;
         }
         else if (s == "right"
-            && cells[-Player.playerCoord.y, Player.playerCoord.x + 1].GetCellType() != Cell.CellType.wall)
+            && Cells[-Player.playerCoord.y, Player.playerCoord.x + 1].GetCellType() != Cell.CellType.wall)
         {
             Player.playerCoord.x += 1;
 
         }
         else if (s == "left"
-             && cells[-Player.playerCoord.y, Player.playerCoord.x - 1].GetCellType() != Cell.CellType.wall)
+             && Cells[-Player.playerCoord.y, Player.playerCoord.x - 1].GetCellType() != Cell.CellType.wall)
         {
             Player.playerCoord.x -= 1;
         }
@@ -322,7 +325,7 @@ public class GameController : MonoBehaviour
         SetCameraPos();
 
         //足元のマスを確認
-        CheckCell(Player.playerCoord.x, Player.playerCoord.y);
+        CheckCell();
 
     }
 
@@ -335,7 +338,7 @@ public class GameController : MonoBehaviour
     void GoFirstFloor()
     {
         mapCreator.InitMap();
-        this.cells = mapCreator.GetCells();
+        this.Cells = mapCreator.GetCells();
         Player.playerCoord = mapCreator.GetInitialPlayerCoord();
 
         playerObject.transform.position = new Vector3(Player.playerCoord.x * width,
@@ -353,7 +356,7 @@ public class GameController : MonoBehaviour
         floor += 1;
 
         mapCreator.InitMap();
-        this.cells = mapCreator.GetCells();
+        this.Cells = mapCreator.GetCells();
         Player.playerCoord = mapCreator.GetInitialPlayerCoord();
 
         playerObject.transform.position = new Vector3(Player.playerCoord.x * width,
@@ -400,7 +403,6 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         CallBackManager.CallBackOnClicked(id);
-        //CallBackManager.ClearCallBack();
     }
 
     public void SetKarma(int karma)
@@ -445,12 +447,12 @@ public class GameController : MonoBehaviour
     //============================================================
     public Cell GetCurrentCell()
     {
-        return cells[-Player.playerCoord.y, Player.playerCoord.x];
+        return Cells[-Player.playerCoord.y, Player.playerCoord.x];
     }
 
-    public void CheckCell(int playerCoordX, int playerCoordY)
+    public void CheckCell()
     {
-        Cell.CellType cellType = cells[-playerCoordY, playerCoordX].GetCellType();
+        Cell.CellType cellType = Cells[-Player.playerCoord.y, Player.playerCoord.x].GetCellType();
 
         switch (cellType)
         {
@@ -516,7 +518,7 @@ public class GameController : MonoBehaviour
     public void ActivateShopCell()
     {
         //CurrentEvent = EventManager.GetEventByID("shop_text");
-        CurrentEvent = EventHolder.GetEventByID("hungry_human");
+        CurrentEvent = EventHolder.GetEventByID("normal_shop");
     }
 
     public void ActivateTrapCell()
@@ -674,8 +676,10 @@ public class GameController : MonoBehaviour
 
     public void OnClickInfo()
     {
+        Console.WriteLine(currentEvent);
         InfoPanel.gameObject.SetActive(false);
         CallBackManager.ClearCallBack();
+        Console.WriteLine(currentEvent);
     }
 
 
@@ -697,6 +701,8 @@ public class GameController : MonoBehaviour
         okButton.onClick.RemoveAllListeners();
         TextMeshProUGUI messageTextObj = ConfirmationWindowPanel
             .Find("Panel/InfoText").GetComponentInChildren<TextMeshProUGUI>();
+
+        messageTextObj.text = message1;
 
         okButton.onClick.AddListener(() => OnClickOKInConfirmation(message2));
         okButton.onClick.AddListener(() => delegateMethod());

@@ -39,7 +39,7 @@ public class Shop
         for (int i = 0; i < itemNum; i++)
         {
             Item item = itemGenerator.GetItemRandomlyByRatio();
-            lineUp.Add(item);
+            AddItem(item);
         }
     }
 
@@ -53,7 +53,23 @@ public class Shop
     {
         this.status = "selling";
         List<Item> items = gameController.AllyManager.Allies[0].Items;
-        gameController.ItemWindowManager.SetTwoColumnItemWindow("selling", lineUp);
+        gameController.ItemWindowManager.SetTwoColumnItemWindow("selling", items);
+    }
+
+    public void AddItem(Item item)
+    {
+
+        for (int i = 0; i < 1000; i++)
+        {
+            string newName = item.ID + i.ToString();
+            if (!lineUp.Exists(x => x.ID == newName))
+            {
+                item.ID = newName;
+                break;
+            }
+        }
+
+        this.lineUp.Add(item);
     }
 
 
