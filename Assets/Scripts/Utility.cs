@@ -66,6 +66,9 @@ public static class Utility
 
     }
 
+    //カラーセッティング
+    //TODO:色設定を別クラスに分ける
+
     public static void SetTextColor(TextMeshProUGUI text, Color color, float alpha = 1.0f)
     {
         Color c = color;
@@ -80,7 +83,7 @@ public static class Utility
         image.color = c;
     }
 
-    public static void SetColorOfButtonObject(Transform buttonObject, Color color, float alpha)
+    public static void SetColorOfButtonObject(Transform buttonObject, Color color, float alpha = 0.3f)
     {
         Image buttonImage = buttonObject.GetComponent<Image>();
         Color c = color;

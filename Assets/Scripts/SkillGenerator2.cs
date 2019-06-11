@@ -59,6 +59,59 @@ public class SkillGenerator2
         }
     }
 
+    public Skill GenerateAilmentSkill(Ailment ailment)
+    {
+        if (ailment == Ailment.poison)
+        {
+            return new Skill()
+            {
+                Message1 = "は毒のダメージを受けた!!",
+                IsAilmentSkill = true,
+                SkillName = SkillName.毒
+            };
+        }
+        else if (ailment == Ailment.confusion)
+        {
+            return new Skill()
+            {
+                Message1 = "は混乱して味方を攻撃した!",
+                IsAilmentSkill = true,
+                SkillName = SkillName.混乱,
+                Target = Target.ally,
+                Scope = Scope.random,
+                SkillType = SkillType.物理攻撃
+            };
+        }
+        else if (ailment == Ailment.sleep)
+        {
+            return new Skill()
+            {
+                Message1 = "は眠っている!",
+                IsAilmentSkill = true,
+                SkillName = SkillName.眠り
+            };
+        }
+        else if (ailment == Ailment.seal)
+        {
+            return new Skill()
+            {
+                Message1 = "は封印されて魔法が使えない!",
+                IsAilmentSkill = true,
+                SkillName = SkillName.封印
+            };
+        }
+        else if (ailment == Ailment.curse)
+        {
+            return new Skill()
+            {
+                Message1 = "は呪われていて動けない!",
+                IsAilmentSkill = true,
+                SkillName = SkillName.呪い
+            };
+        }
+        else return null;
+    }
+
     public Skill Generate(string skillName)
     {
         Item item = new Item();
@@ -66,10 +119,10 @@ public class SkillGenerator2
         string[] data = csvData.Find(s => s[0] == skillName);
 
         //IDは使わない
-        skill.ID = "data[0]";
+        //skill.ID = "data[0]";
 
         skill.SkillName = (SkillName)Enum.Parse(typeof(SkillName), skillName, true);
-        skill.Name = skillName;
+        //skill.Name = skillName;
 
         //skill.SpConsumptions = int.Parse(data[1].Split('/'));
 
@@ -121,7 +174,7 @@ public class SkillGenerator2
         skill.Message1 = data[7];
 
         //スキルの発動タイプ
-        skill.SkillType = (SkillType)Enum.Parse(typeof(SkillType), data[8], true);
+        skill.ActiveType = (ActiveType)Enum.Parse(typeof(ActiveType), data[8], true);
 
         //発動可能な場面
         skill.IsAvairableOnBattle = Convert.ToBoolean(data[9]);

@@ -28,7 +28,7 @@ public class CommandManager : MonoBehaviour {
     //選択済みのコマンドを格納するリスト
     private List<Command> allyCommandList = new List<Command>();
 
-    private Command currentCommand;
+    public Command CurrentCommand;
 
     public GameObject skillButton;
     public GameObject itemButton;
@@ -141,23 +141,32 @@ public class CommandManager : MonoBehaviour {
         //攻撃
         if (commandStatus == "attack")
         {
-            //gameController.WaitClick("Enemy");
-            gameController.CallBackManager.SetNewCallBacks(
-                onClick:gameController.CallBackManager.OnClickedEnemy,
-                onCanceled:gameController.CallBackManager.OnCanceledEnemySelecting,
-                "Enemy");
-            //敵が選択されたら
-            if (!string.IsNullOrEmpty(enemyManager.SelectedEnemyID))
+            if (enemyManager.LivingEnemies.Count == 1)
             {
-                currentCommand.Ability = gameController.SkillGenerator.Generate("攻撃");
-                currentCommand.ToUnit = enemyManager.enemies.Find(e => e.ID1 == enemyManager.SelectedEnemyID);
+                CurrentCommand.Ability = gameController.SkillGenerator.Generate("攻撃");
+                CurrentCommand.ToUnit = enemyManager.LivingEnemies[0];
                 SetCommand();
+            }
+            else
+            {
+                //gameController.WaitClick("Enemy");
+                gameController.CallBackManager.SetNewCallBacks(
+                    onClick: gameController.CallBackManager.OnClickedEnemy,
+                    onCanceled: gameController.CallBackManager.OnCanceledEnemySelecting,
+                    "Enemy");
+                //敵が選択されたら
+                if (!string.IsNullOrEmpty(enemyManager.SelectedEnemyID))
+                {
+                    CurrentCommand.Ability = gameController.SkillGenerator.Generate("攻撃");
+                    CurrentCommand.ToUnit = enemyManager.enemies.Find(e => e.ID1 == enemyManager.SelectedEnemyID);
+                    SetCommand();
+                }
             }
         }
         //スキル
         else if (commandStatus == "skill" || commandStatus == "item") 
         {
-            if (currentCommand.Ability != null)
+            if (CurrentCommand.Ability != null)
             {
                 SetAbilityTarget();
             }
@@ -165,7 +174,7 @@ public class CommandManager : MonoBehaviour {
         //防御
         else if (commandStatus == "defense" || commandStatus == "escape")
         {
-            currentCommand.Ability = gameController.SkillGenerator.Generate("防御");
+            CurrentCommand.Ability = gameController.SkillGenerator.Generate("防御");
             SetCommand();
         }
 
@@ -181,59 +190,69 @@ public class CommandManager : MonoBehaviour {
 
     public void SetAbilityTarget()
     {
-        if (currentCommand.Ability.Target == Target.opponent)
+        if (CurrentCommand.Ability.Target == Target.opponent)
         {
             //単体
-            if (currentCommand.Ability.Scope == Scope.single)
+            if (CurrentCommand.Ability.Scope == Scope.single)
             {
-                //SetText($"{abilityType}：{ability.Name}の対象を選んでください");
-                gameController.CallBackManager.SetNewCallBacks(
-                onClick: gameController.CallBackManager.OnClickedEnemy,
-                onCanceled: gameController.CallBackManager.OnCanceledEnemySelecting,
-                waitingTarget:"Enemy");
-                //敵を選択したら
-                if (!string.IsNullOrEmpty(enemyManager.SelectedEnemyID))
+                if (enemyManager.LivingEnemies.Count == 1)
                 {
-                    currentCommand.ToUnit = enemyManager.enemies.Find(e => e.ID1 == enemyManager.SelectedEnemyID);
+                    CurrentCommand.ToUnit = enemyManager.LivingEnemies[0];
                     SetCommand();
                 }
+                else
+                {
+                    gameController.CallBackManager.SetNewCallBacks(
+                    onClick: gameController.CallBackManager.OnClickedEnemy,
+                    onCanceled: gameController.CallBackManager.OnCanceledEnemySelecting,
+                    waitingTarget: "Enemy");
+                    //敵を選択したら
+                    if (!string.IsNullOrEmpty(enemyManager.SelectedEnemyID))
+                    {
+                        CurrentCommand.ToUnit = enemyManager.enemies.Find(e => e.ID1 == enemyManager.SelectedEnemyID);
+                        SetCommand();
+                    }
+                }
+
             }
             //敵全体
-            else if (currentCommand.Ability.Scope == Scope.entire)
+            else if (CurrentCommand.Ability.Scope == Scope.entire)
             {
                 SetCommand();
             }
         }
 
         //味方に発動
-        else if (currentCommand.Ability.Target == Target.ally)
+        else if (CurrentCommand.Ability.Target == Target.ally)
         {
             //単体
-            if (currentCommand.Ability.Scope == Scope.single)
+            if (CurrentCommand.Ability.Scope == Scope.single)
             {
-                SetText($"{currentCommand.Ability.Name}を使う相手を選んでください");
-                gameController.CallBackManager.SetNewCallBacks(
-                onClick: gameController.CallBackManager.OnClickedAlly,
-                onCanceled: gameController.CallBackManager.OnCanceledAllySelecting,
-                waitingTarget: "Ally");
                 //選択したら
                 if (!string.IsNullOrEmpty(gameController.AllyManager.SelectedAllyID))
                 {
-                    currentCommand.ToUnit = gameController.AllyManager.Allies
+                    CurrentCommand.ToUnit = gameController.AllyManager.Allies
                         .Find(a => a.ID1 == gameController.AllyManager.SelectedAllyID);
                     SetCommand();
                 }
-                //味方全体
-                if (currentCommand.Ability.Scope == Scope.entire)
+                else
                 {
-                    SetCommand();
+                    SetText($"{CurrentCommand.Ability.Name}を使う相手を選んでください");
+                    gameController.CallBackManager.SetNewCallBacks(
+                    onClick: gameController.CallBackManager.OnClickedAlly,
+                    onCanceled: gameController.CallBackManager.OnCanceledAllySelecting,
+                    waitingTarget: "Ally");
                 }
+            }
+            else if (CurrentCommand.Ability.Scope == Scope.entire)
+            {
+                SetCommand();
             }
         }
         //自分に発動
-        else if (currentCommand.Ability.Target == Target.self)
+        else if (CurrentCommand.Ability.Target == Target.self)
         {
-            currentCommand.ToUnit = gameController.AllyManager.Allies[index];
+            CurrentCommand.ToUnit = gameController.AllyManager.Allies[index];
             SetCommand();
         }
     }
@@ -247,8 +266,8 @@ public class CommandManager : MonoBehaviour {
     //一人のコマンドが選択完了したら、Commandクラスをセット
     private void SetCommand()
     {
-        allyCommandList.Add(currentCommand);
-        gameController.AllyManager.Allies[index].CurrentCommand = currentCommand;
+        allyCommandList.Add(CurrentCommand);
+        gameController.AllyManager.Allies[index].CurrentCommand = CurrentCommand;
 
         //SetText("");
         commandStatus = "";
@@ -261,6 +280,10 @@ public class CommandManager : MonoBehaviour {
             index += 1;
             SetNextPanel2();
         }
+
+        gameController.CloseAll();
+
+        CurrentCommand.Ability = null;
 
     }
 
@@ -278,7 +301,9 @@ public class CommandManager : MonoBehaviour {
         gameController.AllyManager.SelectedAllyID = "";
         gameController.EnemyManager.SelectedEnemyID = "";
 
-        currentCommand = new Command() { FromUnit = gameController.AllyManager.Allies[index]};
+        gameController.SelectWhoPanel.SetActive(false);
+
+        CurrentCommand = new Command() { FromUnit = gameController.AllyManager.Allies[index]};
         //コマンドが選択できない場合は飛ばす
         //コマンド自体を登録しない
         if (gameController.AllyManager.Allies[index].IsDeath)
@@ -289,7 +314,7 @@ public class CommandManager : MonoBehaviour {
         else if (gameController.AllyManager.Allies[index].Ailments.ContainsKey(Ailment.sleep))
         {
             Skill skill = gameController.SkillGenerator.Generate("眠り状態");
-            currentCommand.Ability = skill;
+            CurrentCommand.Ability = skill;
             SetCommand();
         }
         else
@@ -302,33 +327,6 @@ public class CommandManager : MonoBehaviour {
             SetItemPanel();
         }
     }
-
-    //仲間を選択
-    //void SetAllySelectPanel()
-    //{
-    //    for (int i = 0; i < allies.Count; i++)
-    //    {
-    //        string buttonName = "Button" + (i + 1).ToString();
-    //        Transform buttonObj = allySelectPanel.transform.Find
-    //            ("Panel/SelectButtonPanel/" + buttonName);
-    //        Button button = buttonObj.transform.GetComponent<Button>();
-    //        TextMeshProUGUI text = buttonObj.transform.Find("Text").
-    //            GetComponent<TextMeshProUGUI>();
-
-    //        text.text = allies[i].GetName();
-    //        if (allies[i].IsDeath)
-    //        {
-    //            button.interactable = false;
-    //        }
-    //        else
-    //        {
-    //            button.interactable = true;
-    //            button.onClick.AddListener(() => OnClickTest());
-    //            string allyID = allies[i].GetID();
-    //            button.onClick.AddListener(() => OnclickAllySellect(allyID));
-    //        }
-    //    }
-    //}
 
     void SetSkillPanel(bool isSelectingAlly = false)
     {
@@ -359,7 +357,7 @@ public class CommandManager : MonoBehaviour {
                     if (skill.SpConsumptions[skill.SkillLevel] < gameController.AllyManager.Allies[index].Statuses[Status.currentSP])
                     {
                         button.interactable = true;
-                        button.onClick.AddListener(() => { currentCommand.Ability = skill; });
+                        button.onClick.AddListener(() => { CurrentCommand.Ability = skill; });
                     }
                     else
                     {
@@ -404,7 +402,7 @@ public class CommandManager : MonoBehaviour {
                 if (item.IsAvairableOnBattle)
                 {
                     button.interactable = true;
-                    button.onClick.AddListener(() => { currentCommand.Ability = item; });
+                    button.onClick.AddListener(() => { CurrentCommand.Ability = item; });
                 }
                 else
                 {
@@ -529,7 +527,7 @@ public class CommandManager : MonoBehaviour {
 
         }
 
-        currentCommand.Ability = ability;
+        CurrentCommand.Ability = ability;
         //selectedItemID = id;
 
     }

@@ -15,13 +15,21 @@ public class ItemWindowManager : MonoBehaviour
     private GameController gameController;
     private AllyManager allyManager;
 
+    public SoundManager soundManager;
+    private Shop Shop;
+
+
+    //private AudioSource purchasedSound;
     public ContentSetter contentSetter;
+    private GameObject purchased;
 
     public Transform ItemWindowPanel;
 
     public Transform itemButtonObject;
 
-    public Transform Button;
+    //public Transform Button;
+
+    public Transform ItemDescriptionPanel;
 
     //public Transform yesNoPanel;
     //public Transform infoPanel;
@@ -93,6 +101,10 @@ public class ItemWindowManager : MonoBehaviour
 
     public void InitComponents()
     {
+        //purchased = Resources.Load("Sounds/Purchased") as GameObject;
+        //var a = Resources.Load("Sounds/ttt");
+        //purchasedSound = Resources.Load("Sounds/Purchased.mp3") as AudioSource;
+
         itemContentPanel = ItemWindowPanel.Find("ScrollView/Viewport/Content");
         itemTexts = itemContentPanel.GetComponentsInChildren<TextMeshProUGUI>();
 
@@ -122,13 +134,15 @@ public class ItemWindowManager : MonoBehaviour
 
         //サブウィンドウに表示される文字のリスナーを設定
         useItemButton.onClick.AddListener(() => OnClickUseItem());
+        itemDescriptionButton.onClick.AddListener(() => OnClickDescription());
         discardItemButton.onClick.AddListener(() => OnClickDiscardItem());
 
     }
 
-    public void SetTwoColumnItemWindow(string situation, List<Item> items)
+    public void SetTwoColumnItemWindow(string situation, List<Item> items, Shop shop = null)
     {
         this.situation = situation;
+        this.Shop = shop;
         //参照私
         this.items = items;
         InitMainWindow(items);
@@ -384,16 +398,23 @@ public class ItemWindowManager : MonoBehaviour
             }
             else
             {
-                items.Remove(selectedItem);
-                gameController.AllyManager.AddItem(selectedItem);
+                //items.Remove(selectedItem);
+                //gameController.AllyManager.AddItem(selectedItem);
+                Shop.AddItem(selectedItem);
                 gameController.SetInfo(message: $"{selectedItem.Name}を購入しました");
+                gameController.SoundManager.Play("Purchase");
+                UpdateWindow();
             }
         }
         else if (this.situation == "selling")
         {
-            items.Remove(selectedItem);
+            //items.Remove(selectedItem);
             //gameController.AllyManager.RemoveItem(selectedItem);
+            Shop.SellItem(selectedItem);
             gameController.SetInfo(message: $"{selectedItem.Name}を売却しました");
+            gameController.SoundManager.Play("Purchase");
+            UpdateWindow();
+
         }
 
         else
@@ -433,10 +454,18 @@ public class ItemWindowManager : MonoBehaviour
 
         }
 
-        UpdateWindow();
-
     }
 
+    public void OnClickDescription()
+    {
+        var topText = ItemDescriptionPanel.Find("TopText").GetComponent<TextMeshProUGUI>();
+        var text = ItemDescriptionPanel.Find("Text").GetComponent<TextMeshProUGUI>();
+
+        topText.text = "アイテム詳細:" + selectedItem.Name;
+        text.text = selectedItem.Description;
+
+        ItemDescriptionPanel.gameObject.SetActive(true);
+    }
 
     public void OnClickMultiProcessing()
     {
@@ -471,7 +500,7 @@ public class ItemWindowManager : MonoBehaviour
             , $"{Utility.GetStringOfEnum(selectedItem.ItemName)}を\n捨ててよろしいですか？"
             , $"アイテムを捨てました。");
     }
-
+    
     /// <summary>
     /// アイテムを捨てる
     /// </summary>
@@ -490,7 +519,8 @@ public class ItemWindowManager : MonoBehaviour
         }
         SelectedItems = new List<Item>();
         selectedItem = new Item();
-        gameController.CloseAll();
+        UpdateWindow();
+        //gameController.CloseAll();
     }
 
     public void PurchaseItems()
@@ -509,12 +539,14 @@ public class ItemWindowManager : MonoBehaviour
             {
                 foreach (Item item in SelectedItems)
                 {
-                    items.RemoveAll(i => i.ID == item.ID);
+                    Shop.BuyItem(selectedItem);
+                    //items.RemoveAll(i => i.ID == item.ID);
                 }
             }
             else
             {
-                items.Remove(selectedItem);
+                Shop.BuyItem(selectedItem);
+                //items.Remove(selectedItem);
             }
             SelectedItems = new List<Item>();
             selectedItem = new Item();
@@ -527,16 +559,18 @@ public class ItemWindowManager : MonoBehaviour
         {
             foreach (Item item in SelectedItems)
             {
+                Shop.SellItem(selectedItem);
                 items.RemoveAll(i => i.ID == item.ID);
             }
         }
         else
         {
-            items.Remove(selectedItem);
+            Shop.SellItem(selectedItem);
+            //items.Remove(selectedItem);
         }
         SelectedItems = new List<Item>();
         selectedItem = new Item();
-        gameController.CloseAll();
+        //gameController.CloseAll();
     }
 
     public void Clicked()

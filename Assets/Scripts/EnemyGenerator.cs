@@ -153,7 +153,7 @@ public class EnemyGenerator
         if (!string.IsNullOrEmpty(data[30]))
             enemy.AilmentResists[Ailment.seal] = int.Parse(data[30]);
         if (!string.IsNullOrEmpty(data[31]))
-            enemy.AilmentResists[Ailment.terror] = int.Parse(data[31]);
+            enemy.AilmentResists[Ailment.curse] = int.Parse(data[31]);
         if (!string.IsNullOrEmpty(data[32]))
         //    enemy.AilmentResists[Ailment.curse] = int.Parse(data[32]);
         //if (!string.IsNullOrEmpty(data[33]))
@@ -168,6 +168,10 @@ public class EnemyGenerator
         return enemy;
     }
 
+    /// <summary>
+    /// 現在のフロアのモンスターテーブルから、敵のリストを生成して返す
+    /// </summary>
+    /// <returns></returns>
     public List<Enemy> CreateEnemiesByCurrentFloorNum()
     {
         var floor = gameController.Floor;
@@ -181,7 +185,24 @@ public class EnemyGenerator
             monsterProb.Add(probs[0], int.Parse(probs[1]));
         }
 
-        int num = UnityEngine.Random.Range(1, 3);
+        int num = 1;
+
+        int randomEnemyNum = UnityEngine.Random.Range(0, 100);
+
+        if (randomEnemyNum < 30)
+        {
+            num = 1;
+        }
+        else if (randomEnemyNum < 70)
+        {
+            num = 2;
+        }
+        else
+        {
+            num = 3;
+        }
+
+        //int num = UnityEngine.Random.Range(1, 3);
 
         for (int i = 0; i < num; i++)
         {

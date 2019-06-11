@@ -45,6 +45,8 @@ public class GameController : MonoBehaviour
     public EventManager EventManager = new EventManager();
     public FloorInfo floorInfoManager = new FloorInfo();
     public CallBackManager CallBackManager = new CallBackManager();
+    public SoundManager SoundManager;
+    public StatusInfoManager StatusInfoManager;
 
     public SkillEffector SkillEffector;
     public ItemEffecor ItemEffecor;
@@ -95,8 +97,8 @@ public class GameController : MonoBehaviour
     private int maxItemNum = 50;
 
     private (int x, int y) initialPos = (0, 0);
-    private int mapSize = 11;
-    public Cell[,] Cells = new Cell[11, 11];
+    private const int mapSize = 11;
+    public Cell[,] Cells = new Cell[mapSize, mapSize];
     private int width = 2;
 
     private (int x, int y) playerPos = (0, 0);
@@ -233,6 +235,7 @@ public class GameController : MonoBehaviour
         SkillGenerator.Load();
         EnemyGenerator.Load();
         AllyGenerator.Load();
+        SoundManager.Load();
     }
 
     void InitMapCreator()
@@ -250,6 +253,7 @@ public class GameController : MonoBehaviour
         OptionManager.Init();
         floorInfoManager.Init(this);
         CallBackManager.Init(this);
+        StatusInfoManager.Init(this);
         //EventManager.Load();
 
         EventHolder.Init(this);
@@ -310,7 +314,6 @@ public class GameController : MonoBehaviour
             && Cells[-Player.playerCoord.y, Player.playerCoord.x + 1].GetCellType() != Cell.CellType.wall)
         {
             Player.playerCoord.x += 1;
-
         }
         else if (s == "left"
              && Cells[-Player.playerCoord.y, Player.playerCoord.x - 1].GetCellType() != Cell.CellType.wall)
@@ -323,6 +326,13 @@ public class GameController : MonoBehaviour
             , Player.playerCoord.y * width + 1, 0);
 
         SetCameraPos();
+
+        FuelNum -= 1;
+        SoundManager.Play("Step");
+
+        mapCreator.ClearDarks(Player.playerCoord);
+
+        mapCreator.HideCells(Player.playerCoord);
 
         //足元のマスを確認
         CheckCell();
@@ -348,6 +358,9 @@ public class GameController : MonoBehaviour
         mainCamera.transform.position = cameraPos;
 
         floorInfoManager.Reset();
+
+        Console.WriteLine(SoundManager.sounds);
+        SoundManager.sounds["Dangeon"].Play();
     }
 
     public void GoNextFloor()
@@ -366,6 +379,8 @@ public class GameController : MonoBehaviour
         mainCamera.transform.position = cameraPos;
 
         floorInfoManager.Reset();
+
+
     }
 
     #endregion
@@ -534,6 +549,7 @@ public class GameController : MonoBehaviour
 
     public void ActivateEnemyCell()
     {
+        SoundManager.sounds["Dangeon"].Stop();
         var Cell = GetCurrentCell();
         if (Cell.Type == Cell.CellType.enemy && Cell.Enemies.Count > 0)
         {
@@ -542,6 +558,8 @@ public class GameController : MonoBehaviour
             EnemyManager.SetEnemies();
             BattleManager.StartBattle();
         }
+
+        SoundManager.sounds["Battle"].Play();
 
     }
 

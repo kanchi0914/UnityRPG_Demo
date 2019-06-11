@@ -31,6 +31,22 @@ public class EnemyManager : MonoBehaviour
 
     public List<Enemy> enemies = new List<Enemy>();
 
+
+    public List<Enemy> LivingEnemies
+    {
+        get
+        {
+            var living = new List<Enemy>();
+            enemies.ForEach(e =>
+            {
+                if (!e.IsDeath) living.Add(e);
+            });
+            return living;
+        }
+        set { }
+    }
+    
+
     EnemyGenerator enemyGenerator;
 
     private List<GameObject> gameObjectsOfEnemies = new List<GameObject>();
@@ -255,6 +271,11 @@ public class EnemyManager : MonoBehaviour
             seq.Append(imageCanvas.DOFade(1.0f, 0.0f));
 
             transform.DOLocalMoveY(200, 1.0f).SetEase(Ease.OutCirc).OnComplete(() => Destroy(transform.gameObject));
+
+            if (damage > 0)
+            {
+                gameController.SoundManager.sounds["Hit"].Play();
+            }
 
             int minusDamage = (-damage);
             text.text = minusDamage.ToString();

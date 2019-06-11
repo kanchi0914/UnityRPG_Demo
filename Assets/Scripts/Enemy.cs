@@ -56,84 +56,92 @@ public class Enemy : Unit {
         foreach (Status key in keyList)
         {
             if (key == Status.Lv) continue;
+            if (key == Status.MaxHP || key == Status.currentHP)
+            {
+                Statuses[key] += (int)(Statuses[key] * ((double)num / (double)5));
+            }
+            else
+            {
+                Statuses[key] += (int)(Statuses[key] * ((double)num / (double)2));
+            }
             //Statuses[key] += (int)(Statuses[key] * (num/10)); 
-            Statuses[key] += (int)(Statuses[key] * ((double)num / (double)10));
+
         }
 
         //Debug.Log(Statuses);
         //Debug.Log(Statuses);
     }
 
-    public string SetDamage(int damage = 0, bool isHit = true)
-    {
-        string message = "";
+    //public string SetDamage(int damage = 0, bool isHit = true)
+    //{
+    //    string message = "";
 
-        if (!IsDeath)
-        {
-            //状態異常によるダメージの判定
-            if (Ailments.ContainsKey(Ailment.sleep))
-            {
-                damage = (int)(damage * 1.5);
-            }
+    //    if (!IsDeath)
+    //    {
+    //        //状態異常によるダメージの判定
+    //        if (Ailments.ContainsKey(Ailment.sleep))
+    //        {
+    //            damage = (int)(damage * 1.5);
+    //        }
 
-            //ダメージ、回復はマイナス
-            Statuses[EnumHolder.Status.currentHP] -= damage;
-            //ダメージエフェクト
-            //gameController.AllyManager.DamageEffect(this, damage);
-            enemyManager.SetDamageEffect(this, damage, isHit);
+    //        //ダメージ、回復はマイナス
+    //        Statuses[EnumHolder.Status.currentHP] -= damage;
+    //        //ダメージエフェクト
+    //        //gameController.AllyManager.DamageEffect(this, damage);
+    //        enemyManager.SetDamageEffect(this, damage, isHit);
 
-            //ダメージテキスト
-            if (damage > 0)
-            {
-                message += $"{Name}に{damage}のダメージを与えた\n";
-            }
-            else if (damage < 0)
-            {
-                if (Statuses[Status.currentHP] >= Statuses[Status.MaxHP])
-                {
-                    message += $"{Name}のHPが全回復した\n";
-                }
-                else
-                {
-                    message += $"{Name}のHPが{-damage}回復した\n";
-                }
-            }
+    //        //ダメージテキスト
+    //        if (damage > 0)
+    //        {
+    //            message += $"{Name}に{damage}のダメージを与えた\n";
+    //        }
+    //        else if (damage < 0)
+    //        {
+    //            if (Statuses[Status.currentHP] >= Statuses[Status.MaxHP])
+    //            {
+    //                message += $"{Name}のHPが全回復した\n";
+    //            }
+    //            else
+    //            {
+    //                message += $"{Name}のHPが{-damage}回復した\n";
+    //            }
+    //        }
 
-            //死亡確認
-            message += CheckDeath();
-            CheckMaxHP();
+    //        //死亡確認
+    //        message += CheckDeath();
+    //        CheckMaxHP();
 
-            //ダメージを受けたときに解除される状態の判定
-            if (damage > 0)
-            {
-                message += CheckRemove();
-            }
-        }
+    //        //ダメージを受けたときに解除される状態の判定
+    //        if (damage > 0)
+    //        {
+    //            message += CheckRemove();
+    //        }
+    //    }
 
-        return message;
-    }
+    //    return message;
+    //}
 
-    public string CheckDeath()
-    {
-        string message = "";
-        if (Statuses[EnumHolder.Status.currentHP] < 1)
-        {
-            Statuses[EnumHolder.Status.currentHP] = 0;
-            message += $"{Name}を倒した！\n";
-            //死亡;
-            IsDeath = true;
-        }
-        return message;
-    }
+    //public string CheckDeath()
+    //{
+    //    string message = "";
+    //    if (Statuses[EnumHolder.Status.currentHP] < 1)
+    //    {
+    //        Statuses[EnumHolder.Status.currentHP] = 0;
+    //        message += $"{Name}を倒した！\n";
+    //        //死亡;
+    //        IsDeath = true;
+    //    }
+    //    return message;
+    //}
 
-    public void CheckMaxHP()
-    {
-        //最大体力
-        if (Statuses[EnumHolder.Status.currentHP] >= Statuses[EnumHolder.Status.MaxHP])
-        {
-            Statuses[EnumHolder.Status.currentHP] = Statuses[EnumHolder.Status.MaxHP];
-        }
-    }
+    //public void CheckMaxHP()
+    //{
+    //    //最大体力
+    //    if (Statuses[EnumHolder.Status.currentHP] >= Statuses[EnumHolder.Status.MaxHP])
+    //    {
+    //        Statuses[EnumHolder.Status.currentHP] = Statuses[EnumHolder.Status.MaxHP];
+    //    }
+    //}
 
     //敵の合わせた物理攻撃力
     public override int GetOffensivePower()

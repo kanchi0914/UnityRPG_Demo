@@ -50,7 +50,7 @@ public class Unit
         {Ailment.seal, 0},
         {Ailment.sleep, 0},
         {Ailment.stun, 0},
-        {Ailment.terror, 0},
+        {Ailment.curse, 0},
         //{Ailment.turnover, 0},
     };
 
@@ -173,14 +173,21 @@ public class Unit
     //HPの％を返す
     public float GetPerHP()
     {   
-        float per = (Statuses[Status.currentHP] / Statuses[Status.MaxHP]);
-        return Math.Min(1, Math.Max(0, per));
+        float per = ((float)Statuses[Status.currentHP] / (float)Statuses[Status.MaxHP]);
+        //if (per > 1.0f) per = 1.0f;
+        //if (per < 0f) per = 0.0f;
+        //return per;
+        return Math.Min(1.0f, Math.Max(0.0f, per));
+        
     }
 
     public float GetPerSP()
     {
-        float per = (Statuses[Status.currentSP] / Statuses[Status.MaxSP]);
-        return Math.Min(1, Math.Max(0, per));
+        float per = ((float)Statuses[Status.currentSP] / (float)Statuses[Status.MaxSP]);
+        //if (per > 1.0f) per = 1.0f;
+        //if (per < 0f) per = 0.0f;
+        //return per;
+        return Math.Min(1f, Math.Max(0f, per));
     }
 
 
@@ -214,6 +221,7 @@ public class Unit
 
         if (!IsDeath)
         {
+
             //状態異常によるダメージの判定
             if (Ailments.ContainsKey(Ailment.sleep))
             {
@@ -222,6 +230,7 @@ public class Unit
 
             //ダメージ、回復はマイナス
             Statuses[EnumHolder.Status.currentHP] -= damage;
+
 
             //ダメージエフェクト
             if (this.GetType() == typeof(Ally))
@@ -238,11 +247,11 @@ public class Unit
             {
                 if (this.GetType() == typeof(Ally))
                 {
-                    message += $"{Name}は{damage}のダメージを受けた\n。";
+                    message += $"{Name}は{damage}のダメージを受けた。\n";
                 }
                 else
                 {
-                    message += $"{Name}に{damage}のダメージを与えた\n。";
+                    message += $"{Name}に{damage}のダメージを与えた。\n";
                 }
                 
             }
@@ -251,11 +260,11 @@ public class Unit
             {
                 if (Statuses[Status.currentHP] >= Statuses[Status.MaxHP])
                 {
-                    message += $"{Name}のHPが全回復した\n。";
+                    message += $"{Name}のHPが全回復した。\n";
                 }
                 else
                 {
-                    message += $"{Name}のHPが{-damage}回復した\n。";
+                    message += $"{Name}のHPが{-damage}回復した。\n";
                 }
             }
 
@@ -358,14 +367,13 @@ public class Unit
         set;
     }
     public List<Buff> Buffs { get => buffs; set => buffs = value; }
-    //public HashSet<Ailment> Ailments { get => ailments; set => ailments = value; }
-    public Dictionary<Ailment, int> Ailments { get; set; }
+    public Dictionary<Ailment, int> Ailments { get; set; } = new Dictionary<Ailment, int>();
     public int TempAGI { get => tempAGI; set => tempAGI = value; }
     public Dictionary<Status, int> Statuses { get => statuses; set => statuses = value; }
     public Sprite Image { get => image; set => image = value; }
     public Dictionary<Ailment, int> AilmentResists { get => ailmentResists; set => ailmentResists = value; }
     public Dictionary<Attribution, int> AttributionResists { get => attributionResists; set => attributionResists = value; }
-    public UnitType UnitType1 { get => unitType; set => unitType = value; }
+    //public UnitType UnitType1 { get => unitType; set => unitType = value; }
     public HashSet<Ailment> AdditionalAilment { get => additionalAilment; set => additionalAilment = value; }
     //public Ability CurrentAbility { get => currentAbility; set => currentAbility = value; }
     public Command CurrentCommand { get; set; }
@@ -510,7 +518,7 @@ public class Unit
             //死んでいない相手から選ぶ
             if (!u.IsDeath)
             {
-                if (u.UnitType1 == this.UnitType1)
+                if (u.GetType() == GetType())
                 {
                     mates.Add(u);
                 }
@@ -527,7 +535,7 @@ public class Unit
             //死んでいない相手から選ぶ
             if (!u.IsDeath)
             {
-                if (u.UnitType1 != this.UnitType1)
+                if (u.GetType() != GetType())
                 {
                     opponents.Add(u);
                 }
@@ -536,21 +544,23 @@ public class Unit
         return opponents;
     }
 
-    public Unit ChooseRandomly(List<Unit> unitList)
+    public Unit ChooseMateRandomly(List<Unit> units)
     {
-        List<Unit> opponents = new List<Unit>();
-        foreach (Unit u in unitList)
+        List<Unit> mates = GetMates(units);
+        if (mates.Count != 0)
         {
-            //死んでいない相手から選ぶ
-            if (!u.IsDeath)
-            {
-                if (u.UnitType1 != this.UnitType1)
-                {
-                    opponents.Add(u);
-                }
-            }
+            Unit chosen = mates[UnityEngine.Random.Range(0, mates.Count)];
+            return chosen;
         }
+        else
+        {
+            return null;
+        }
+    }
 
+    public Unit ChooseOpponentRandomly(List<Unit> units)
+    {
+        List<Unit> opponents = GetOpponents(units);
         if (opponents.Count != 0)
         {
             Unit chosen = opponents[UnityEngine.Random.Range(0, opponents.Count)];

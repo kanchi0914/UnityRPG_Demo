@@ -35,7 +35,7 @@ public class BattleManager : MonoBehaviour
     private GameObject commandParentPanel;
 
     private List<Ally> allies;
-    private List<Unit> unitList;
+    private List<Unit> units;
     private List<Enemy> enemies;
 
     private GameObject inoperablePanel;
@@ -106,14 +106,14 @@ public class BattleManager : MonoBehaviour
         commandManager.SetActive(false);
         enemyManager.SetActive(true);
 
-        unitList = new List<Unit>();
+        units = new List<Unit>();
         foreach (Ally ally in allies)
         {
-            unitList.Add(ally);
+            units.Add(ally);
         }
         foreach (Enemy enemy in enemies)
         {
-            unitList.Add(enemy);
+            units.Add(enemy);
         }
 
         messageManager.SetText("敵が<b> 現れた </b>");
@@ -137,6 +137,7 @@ public class BattleManager : MonoBehaviour
     public void StartExecutingCommands()
     {
         tempCommands = SortBySpeed();
+        tempCommands = CheckPoison(tempCommands);
         commandManager.SetActive(false);
         messageManager.SetActive(true);
         messageManager.Reset();
@@ -158,15 +159,20 @@ public class BattleManager : MonoBehaviour
         //優先される行動を書く
         for (int i = 0; i < tempCommands.Count; i++)
         {
+            var ability = tempCommands[i].Ability;
             if (tempCommands[i].FromUnit.Buffs.Exists(b => b.Skill.SkillName == SkillName.疾風の舞))
             {
                 priCommands.Add(tempCommands[i]);
                 tempCommands.Remove(tempCommands[i]);
             }
-            else if (tempCommands[i].Ability.AbilityName == SkillName.ソニックバット)
+            else if (ability.GetType() == typeof(Skill))
             {
+                var skill = (Skill)ability;
+                if (skill.SkillName == SkillName.ソニックバット) { }
+
                 priCommands.Add(tempCommands[i]);
                 tempCommands.Remove(tempCommands[i]);
+
             }
         }
 
@@ -188,11 +194,7 @@ public class BattleManager : MonoBehaviour
         return orderedPri;
     }
 
-    public void OnClick()
-    {
-        isWaitingClick = false;
-    }
-
+    //メッセージウィンドウクリック時に、次のコマンドを実行する
     public void ExecuteNextCommand()
     {
         //コマンドがまだ残っていたら
@@ -206,18 +208,40 @@ public class BattleManager : MonoBehaviour
         //全員の行動が完了したら次のターンへ
         else
         {
-            turn += 1;
-            isStartedTurn = false;
-            messageManager.SetActive(false);
-            commandManager.SetActive(true);
-            commandManager.StartNewTurn();
+            EndTurn();
         }
+    }
 
+
+    public void EndTurn()
+    {
+        turn += 1;
+        isStartedTurn = false;
+        messageManager.SetActive(false);
+        commandManager.SetActive(true);
+        commandManager.StartNewTurn();
+    }
+
+    public List<Command> CheckPoison(List<Command> commands)
+    {
+        allies.ForEach(a =>
+        {
+            if (a.Ailments.ContainsKey(Ailment.poison))
+            {
+                Skill poison = skillGenerator.GenerateAilmentSkill(Ailment.poison);
+                Command command = new Command()
+                {
+                    Ability = poison,
+                    FromUnit = a,
+                    ToUnit = a
+                };
+            }
+        });
+        return commands;
     }
 
     public void ExecuteCommand(Command command)
     {
-
         var message = "";
 
         Unit fromUnit = command.FromUnit;
@@ -236,23 +260,44 @@ public class BattleManager : MonoBehaviour
             //攻撃対象が死亡していたら、生きている相手の中から選びなおす
             if (toUnit != null && toUnit.IsDeath)
             {
-                toUnit = fromUnit.ChooseRandomly(unitList);
+                //if (command.Ability.Target == Target.ally && fromUnit.GetType() == typeof(Ally))
+                //{
+
+                //}
+                toUnit = fromUnit.ChooseOpponentRandomly(units);
                 //toUnitName = toUnit.GetName();
             }
-
-            //とりあえずシングルかマルチかで分ける
-
             if (command.Ability.GetType() == typeof(Skill))
             {
                 Skill skill = command.Ability as Skill;
-                message += gameController.SkillEffector.Use(skill, unitList, fromUnit, toUnit);
+                //状態異常により、コマンドがキャンセルされた場合
+                //if (skill.SkillType == SkillType.物理攻撃 || skill.SkillType == SkillType.物理補助 &&
+                //    fromUnit.Ailments.ContainsKey(Ailment.curse))
+                //{
+                //    Skill ailmentSkill = skillGenerator.GenerateAilmentSkill(Ailment.curse);
+                //    message += gameController.SkillEffector.Use(ailmentSkill, units, fromUnit, toUnit);
+                //}
+                //else if (skill.SkillType == SkillType.魔法攻撃 || skill.SkillType == SkillType.魔法補助 &&
+                //    fromUnit.Ailments.ContainsKey(Ailment.seal))
+                //{
+                //    Skill ailmentSkill = skillGenerator.GenerateAilmentSkill(Ailment.seal);
+                //    message += gameController.SkillEffector.Use(ailmentSkill, units, fromUnit, toUnit);
+                //}
+                string ailmentMessage = CheckAilment(fromUnit, skill);
+                if (!string.IsNullOrEmpty(ailmentMessage))
+                {
+                    message += gameController.SkillEffector.Use(skill, units, fromUnit, toUnit);
+                }
+                else
+                {
+                    message += ailmentMessage;
+                }
             }
-
             else if (command.Ability.GetType() == typeof(Item))
             {
                 //List<Item> items = allyManager.GetItems();
                 Item item = command.Ability as Item;
-                message += gameController.ItemEffecor.Use(item, unitList, fromUnit, toUnit);
+                message += gameController.ItemEffecor.Use(item, units, fromUnit, toUnit);
             }
 
             //パネルの表示を更新
@@ -276,7 +321,7 @@ public class BattleManager : MonoBehaviour
         //敵が全滅
         else if (enemyManager.CheckAllDead())
         {
-            StartCoroutine(Click2());
+            StartCoroutine(OnClickInEndOfBattle());
         }
         else
         {
@@ -284,18 +329,58 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    //状態異常によるコマンド変更の処理
+    //コマンド実行の直前に呼び出される
+    //特になにもない場合は空文字列が返る
+    private string CheckAilment(Unit fromUnit, Skill skill)
+    {
+        string message = "";
+        if (fromUnit.Ailments.ContainsKey(Ailment.sleep))
+        {
+            Skill ailmentSkill = skillGenerator.GenerateAilmentSkill(Ailment.sleep);
+            message += gameController.SkillEffector.Use(ailmentSkill, null, null, null);
+        }
+        else if (fromUnit.Ailments.ContainsKey(Ailment.confusion))
+        {
+            int random = UnityEngine.Random.Range(0, 2);
+            if (random > 0)
+            {
+                Unit toUnit = fromUnit.ChooseMateRandomly(units);
+                Skill ailmentSkill = skillGenerator.GenerateAilmentSkill(Ailment.confusion);
+                message += gameController.SkillEffector.Use(ailmentSkill, units, fromUnit, toUnit);
+            }
+        }
+        else if (skill.SkillType == SkillType.物理攻撃 || skill.SkillType == SkillType.物理補助 &&
+            fromUnit.Ailments.ContainsKey(Ailment.curse))
+        {
+            Skill ailmentSkill = skillGenerator.GenerateAilmentSkill(Ailment.curse);
+            message += gameController.SkillEffector.Use(ailmentSkill, null, null, null);
+        }
+        else if (skill.SkillType == SkillType.魔法攻撃 || skill.SkillType == SkillType.特殊 &&
+            fromUnit.Ailments.ContainsKey(Ailment.seal))
+        {
+            Skill ailmentSkill = skillGenerator.GenerateAilmentSkill(Ailment.seal);
+            message += gameController.SkillEffector.Use(ailmentSkill, null, null, null);
+        }
+        return message;
+    }
 
+    //メッセージウィンドウをクリックするのを待ち、クリックされたら次のコマンドを実行
     IEnumerator Click()
     {
         yield return new WaitForSeconds(0.1f);
         gameController.CallBackManager.SetNewCallBacks(
-        onClick: gameController.CallBackManager.OnClickedMessageWindowInBattle,
+        //onClick: gameController.CallBackManager.OnClickedMessageWindowInBattle,
+        onClick:( (id) => 
+        {
+            ExecuteNextCommand();
+        }),
         onCanceled: null,
         waitingTarget: "MessageWindow"
         );
     }
 
-    IEnumerator Click2()
+    IEnumerator OnClickInEndOfBattle()
     {
         yield return new WaitForSeconds(0.1f);
         gameController.CallBackManager.SetNewCallBacks(
@@ -331,7 +416,9 @@ public class BattleManager : MonoBehaviour
         SetResult();
     }
 
-
+    /// <summary>
+    /// 結果を表示する
+    /// </summary>
     public void SetResult()
     {
         TextMeshProUGUI expText = resultPanel.Find("ExpText").GetComponent<TextMeshProUGUI>();

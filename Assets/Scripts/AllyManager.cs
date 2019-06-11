@@ -196,22 +196,16 @@ public class AllyManager : MonoBehaviour {
         {
             Allies[i].SetPanel();
 
-            float perHP = ((Allies[i].Statuses[Status.currentHP])
-                / Allies[i].Statuses[Status.MaxHP]);
+            //DamageEffect(Allies[i]);
 
-            if (perHP < 0) perHP = 0f;
-            if (perHP > 1) perHP = 1.0f;
+            //float perHP = Allies[i].GetPerHP();
 
-            float perSP = perSP = ((Allies[i].Statuses[Status.currentHP])
-                / Allies[i].Statuses[Status.MaxSP]);
+            //float perSP = Allies[i].GetPerSP();
 
-            if (perSP < 0) perSP = 0f;
-            if (perSP > 1) perSP = 1.0f;
-
-            Transform bar = allyPanels[i].transform.Find("Status/MaxHPBar/CurrentHPBar");
-            //ＨＰバーの動き
-            Vector3 scale = new Vector3(perHP, 1, 1);
-            bar.DOScale(scale, 0.2f);
+            //Transform bar = allyPanels[i].transform.Find("Status/MaxHPBar/CurrentHPBar");
+            ////ＨＰバーの動き
+            //Vector3 scale = new Vector3(perHP, 1, 1);
+            //bar.DOScale(scale, 0.2f);
 
             //Transform bar2 = allyPanels[i].transform.Find("Status/MaxSPBar/CurrentSPBar");
             ////ＨＰバーの動き
@@ -237,6 +231,90 @@ public class AllyManager : MonoBehaviour {
                 Utility.SetBackGroundImageColor(image, Color.black, 0.5f);
             }
         }
+    }
+
+    public void SpDamageEffect(Unit unit)
+    {
+        Ally ally = unit as Ally;
+        Transform allyPanel;
+
+        int index = Allies.IndexOf(ally);
+
+        allyPanel = allyPanels[index].transform;
+
+        Transform bar = allyPanels[index].transform.Find("Status/MaxSPBar/CurrentSPBar");
+
+        float perSP = ally.GetPerSP();
+
+        //ＨＰバーの動き
+        Vector3 scale = new Vector3(perSP, 1, 1);
+        bar.DOScale(scale, 0.3f);
+
+    }
+
+    public void DamageEffect(Unit unit, int damage = 0, bool hit = true)
+    {
+        Ally ally = unit as Ally;
+        Transform allyPanel;
+
+        int index = Allies.IndexOf(ally);
+
+        allyPanel = allyPanels[index].transform;
+
+        TextMeshProUGUI text = allyPanels[index].transform.Find("Status/Damage").GetComponent<TextMeshProUGUI>();
+        CanvasGroup canvas = text.GetComponent<CanvasGroup>();
+
+        canvas.alpha = 1;
+        Vector3 pos = text.transform.position;
+        //text.transform.position = new Vector3(pos.x, 0, pos.y);
+        Sequence seq = DOTween.Sequence();
+
+        //TODO:直す
+        Transform bar = allyPanels[index].transform.Find("Status/MaxHPBar/CurrentHPBar");
+
+        float perHP = ally.GetPerHP();
+
+        if (perHP < 0.1f)
+        {
+            Console.WriteLine("");
+        }
+
+        if (hit && damage != 0)
+        {
+            //ＨＰバーの動き
+            Vector3 scale = new Vector3(perHP, 1, 1);
+            bar.DOScale(scale, 0.3f);
+
+            if (damage > 0)
+            {
+                text.text = "-" + (damage).ToString();
+                allyPanel.DOShakePosition(0.5f, strength: 30, vibrato: 50);
+
+                text.color = new Color(0.78f, 0.06f, 0f, 1f);
+                seq.Append(text.transform.DOShakePosition(0.5f, strength: 30, vibrato: 50).SetEase(Ease.OutCirc)
+                    .OnStart(() => { text.transform.position = new Vector3(pos.x, 0, pos.y); }));
+                seq.Append(text.transform.DOLocalMoveY(200, 2f));
+                seq.Join(canvas.DOFade(0, 0.5f));
+                gameController.SoundManager.sounds["Hit"].Play();
+            }
+            else
+            {
+                text.text = "+" + (-damage).ToString();
+                text.color = new Color(0.48f, 0.76f, 0f, 1f);
+                seq.SetDelay(0.5f);
+                seq.Append(text.transform.DOLocalMoveY(200, 2f));
+                seq.Join(canvas.DOFade(0, 0.5f)).OnComplete(() => { text.transform.position = new Vector3(pos.x, 0, pos.y); });
+            }
+        }
+        else
+        {
+            text.text = "miss!!";
+            text.color = new Color(1f, 1f, 1f, 1f);
+            seq.Append(text.transform.DOLocalMoveY(200, 2f).OnStart(() => { text.transform.position = new Vector3(pos.x, 0, pos.y); }));
+            seq.Join(canvas.DOFade(0, 0.5f));
+        }
+
+
     }
 
 
@@ -333,7 +411,7 @@ public class AllyManager : MonoBehaviour {
     public void RemoveItem(Item item)
     {
         List<Item> items = Allies[0].Items;
-        if (item.isConsumable) items.Remove(items.Find(i => i.ID == item.ID));
+        if (item.IsConsumable) items.Remove(items.Find(i => i.ID == item.ID));
     }
 
     //アイテム追加---------------------------------------------------------
@@ -582,83 +660,7 @@ public class AllyManager : MonoBehaviour {
     //    isClicked = true;
     //}
 
-    public void SpDamageEffect(Unit unit)
-    {
-        Ally ally = unit as Ally;
-        Transform allyPanel;
 
-        int index = Allies.IndexOf(ally);
-
-        allyPanel = allyPanels[index].transform;
-
-        Transform bar = allyPanels[index].transform.Find("Status/MaxSPBar/CurrentSPBar");
-
-        float perSP = ally.GetPerSP();
-
-        //ＨＰバーの動き
-        Vector3 scale = new Vector3(perSP, 1, 1);
-        bar.DOScale(scale, 0.3f);
-
-    }
-
-    public void DamageEffect(Unit unit, int damage, bool hit = true)
-    {
-        Ally ally = unit as Ally;
-        Transform allyPanel;
-
-        int index = Allies.IndexOf(ally);
-
-        allyPanel = allyPanels[index].transform;
-
-        TextMeshProUGUI text = allyPanels[index].transform.Find("Status/Damage").GetComponent<TextMeshProUGUI>();
-        CanvasGroup canvas = text.GetComponent<CanvasGroup>();
-
-        canvas.alpha = 1;
-        Vector3 pos = text.transform.position;
-        //text.transform.position = new Vector3(pos.x, 0, pos.y);
-        Sequence seq = DOTween.Sequence();
-
-        //TODO:直す
-        Transform bar = allyPanels[index].transform.Find("Status/MaxHPBar/CurrentHPBar");
-
-        float perHP = ally.GetPerHP();
-
-        if (hit)
-        {
-            //ＨＰバーの動き
-            Vector3 scale = new Vector3(perHP, 1, 1);
-            bar.DOScale(scale, 0.3f);
-
-            if (damage > 0)
-            {
-                text.text = "-" + (damage).ToString();
-                allyPanel.DOShakePosition(0.5f, strength: 30, vibrato: 50);
-
-                text.color = new Color(0.78f, 0.06f, 0f, 1f);
-                seq.Append(text.transform.DOShakePosition(0.5f, strength: 30, vibrato: 50).SetEase(Ease.OutCirc)
-                    .OnStart(() => { text.transform.position = new Vector3(pos.x, 0, pos.y); }));
-                seq.Append(text.transform.DOLocalMoveY(200, 2f));
-                seq.Join(canvas.DOFade(0, 0.5f));
-            }
-            else
-            {
-                text.text = "+" + (-damage).ToString();
-                text.color = new Color(0.48f, 0.76f, 0f, 1f);
-                seq.SetDelay(0.5f);
-                seq.Append(text.transform.DOLocalMoveY(200, 2f));
-                seq.Join(canvas.DOFade(0, 0.5f)).OnComplete(() => { text.transform.position = new Vector3(pos.x, 0, pos.y); });
-            }
-        }
-        else
-        {
-            text.text = "miss!!";
-            text.color = new Color(1f, 1f, 1f, 1f);
-            seq.Append(text.transform.DOLocalMoveY(200, 2f).OnStart(() => { text.transform.position = new Vector3(pos.x, 0, pos.y); }));
-            seq.Join(canvas.DOFade(0, 0.5f));
-        }
-
-
-    }
 
     public void AddAlly()
     {

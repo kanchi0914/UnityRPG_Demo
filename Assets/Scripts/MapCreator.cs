@@ -32,6 +32,7 @@ public class MapCreator : MonoBehaviour
     public GameObject fountainCell;
     public GameObject rareTreasureCell;
     public GameObject eventCell;
+    private GameObject darkCell;
 
     public GameObject horizon;
     public GameObject vertical;
@@ -66,7 +67,7 @@ public class MapCreator : MonoBehaviour
     private int playerPosX = 0;
     private int playerPosY = 0;
 
-    private int hideCellCount = 99;
+    private int hideCellCount = 3;
 
     (int x, int y) initialPlayerCoord = (0, 0);
 
@@ -89,6 +90,8 @@ public class MapCreator : MonoBehaviour
         this.mapSize = mapSize;
         this.cells = cells;
         this.width = width;
+
+        darkCell = Resources.Load("Prefab/DarkCell") as GameObject;
 
         mazeCreator = new MazeCreator_Extend(mapSize, mapSize);
 
@@ -115,18 +118,34 @@ public class MapCreator : MonoBehaviour
     {
         //mazeCreator = new MazeCreator_Extend(mapSize, mapSize);
 
+
         map = mazeCreator.CreateMaze();
 
         BreakWallPre(30);
+
+
+        GameObject darkCells = GameObject.Find("DarkCells");
+        foreach (Transform t in darkCells.transform)
+        {
+            Destroy(t.gameObject);
+        }
+
+
         CreateMap2();
 
         initialPlayerCoord = planePanelCoords[UnityEngine.Random.Range(0, planePanelCoords.Count)];
         //要注意
+
         planePanelCoords.Remove(initialPlayerCoord);
 
-        //AddCellType(Cell.CellType.enemy, 10);
+        ClearDarks(initialPlayerCoord);
+        //AddCellType(Cell.CellType.enemy, 20);
 
-        AddCellType(Cell.CellType.shop, 10);
+        int enemynum = Utility.Poisson(8.0);
+
+        AddCellByNum(Cell.CellType.shop, 20);
+
+        //AddCellType(Cell.CellType.shop, 10);
         //AddCellType(Cell.CellType.rareTreasure, 1);
         //AddCellType(Cell.CellType.trap, 5);
         //AddCellType(Cell.CellType.Event, 5);
@@ -134,6 +153,7 @@ public class MapCreator : MonoBehaviour
         //AddCellType(Cell.CellType.human, 50);
         //AddCellType(Cell.CellType.shop, 5);
 
+        HideCells(initialPlayerCoord);
         AddGoal();
 
     }
@@ -315,7 +335,7 @@ public class MapCreator : MonoBehaviour
     }
 
     //暗闇を追加する場合
-    public void HideCells()
+    public void HideCells((int x, int y) playerCoord)
     {
         for (int i = 0; i < mapSize; i++)
         {
@@ -324,9 +344,9 @@ public class MapCreator : MonoBehaviour
                 if (cells[i, j].GetCellType() != Cell.CellType.wall ||
                     cells[i, j].GetCellType() != Cell.CellType.plane)
                 {
-                    if (Math.Abs(cells[i, j].GetCoord().x - player.playerCoord.x) < hideCellCount &&
-                        Math.Abs(cells[i, j].GetCoord().y - player.playerCoord.y) < hideCellCount)
-                    {
+                    if (Math.Abs(cells[i, j].GetCoord().x - playerCoord.x) < 3 &&
+                        Math.Abs(cells[i, j].GetCoord().y - playerCoord.y) < 3)
+                    { 
                         cells[i, j].SetActivePlane(false);
                     }
                     else
@@ -376,7 +396,7 @@ public class MapCreator : MonoBehaviour
                 if (map[i, j] == 0)
                 {
                     cells[i, j].Init(gameController, normal, currentCoordX, currentCoordY, width,
-                        mazeParent, player, Cell.CellType.plane);
+                        mazeParent, player, Cell.CellType.plane, darkCell);
                     planePanelCoords.Add((currentCoordX, currentCoordY));
                 }
                 //壁
@@ -443,7 +463,9 @@ public class MapCreator : MonoBehaviour
                     }
 
                     cells[i, j].Init(gameController, wallObject, currentCoordX, currentCoordY, width,
-                        mazeParent, player, Cell.CellType.wall);
+                        mazeParent, player, Cell.CellType.wall, darkCell);
+
+
                 }
 
                 //逆になるので注意
@@ -454,6 +476,25 @@ public class MapCreator : MonoBehaviour
                 currentCoordX += 1;
             }
             currentCoordY -= 1;
+        }
+
+
+    }
+
+    public void ClearDarks((int x, int y) coord)
+    {
+        for (int i = 0; i < mapSize; i++)
+        {
+            for (int j = 0; j < mapSize; j++)
+            {
+                {
+                    if (Math.Abs(cells[i, j].GetCoord().x - coord.x) < 3 &&
+                        Math.Abs(cells[i, j].GetCoord().y - coord.y) < 3)
+                    {
+                        cells[i, j].ClearDark();
+                    }
+                }
+            }
         }
     }
 
@@ -496,6 +537,73 @@ public class MapCreator : MonoBehaviour
                 break;
             }
         }
+    }
+
+
+    //指定した個数ランダムに変化させる
+    void AddCellByNum(Cell.CellType celltype, int num)
+    {
+        var convertedCellCoordList = new List<(int x, int y)>();
+
+        //foreach ((int x, int y) current in planePanelCoords)
+        //{
+        //    var converted = planePanelCoords.GetAndRemoveAtRandom();
+        //}
+
+        for (int i = 0; i < num; i++)
+        {
+            (int x, int y) converted = planePanelCoords.GetAtRandom();
+            (int x, int y) matrix = ConvertToMatrixNum(converted.x, converted.y);
+
+            int iteration = 0;
+
+            while (true)
+            {
+                iteration++;
+                int count = 0;
+
+                //(int x, int y) converted = planePanelCoords.GetAndRemoveAtRandom();
+                for (int j = 0; j < mapSize; j++)
+                {
+                    for (int k = 0; k < mapSize; k++)
+                    {
+                        if (cells[j, k].GetCellType() == celltype)
+                        {
+                            if (Math.Abs(cells[j, k].GetCoord().x - converted.x) < 3 &&
+                                Math.Abs(cells[j, k].GetCoord().y - converted.y) < 3)
+                            {
+                                count++;
+                            }
+                            else
+                            {
+                                //cells[i,j].SetActivePlane(true);
+                            }
+                        }
+
+                    }
+
+                }
+
+                if (UnityEngine.Random.Range(0,100) < count * 20 && iteration < 10)
+                {
+                    converted = planePanelCoords.GetAtRandom();
+                    matrix = ConvertToMatrixNum(converted.x, converted.y);
+
+                    continue;
+
+                }
+                else
+                {
+                    break;
+                }
+
+            }
+
+            cells[matrix.x, matrix.y].ConvertCellType(celltype);
+            planePanelCoords.Remove(converted);
+
+        }
+        
     }
 
     void AddCellType(Cell.CellType celltype, int prob)

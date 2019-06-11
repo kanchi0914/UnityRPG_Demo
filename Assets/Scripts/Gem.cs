@@ -21,7 +21,7 @@ public class Gem : Item
 
     public Gem()
     {
-        isConsumable = false;
+        IsConsumable = false;
         IsUsable = false;
         IsAvairableOnBattle = false;
         IsAvairableOnFloor = false;

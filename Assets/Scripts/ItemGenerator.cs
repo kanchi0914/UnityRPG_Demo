@@ -90,7 +90,7 @@ public class ItemGenerator
         item.SellingPrice = int.Parse(data[4]);
         item.Value = int.Parse(data[5]);
 
-        item.isConsumable = Convert.ToBoolean(data[6]);
+        item.IsConsumable = Convert.ToBoolean(data[6]);
 
         //アイテムタイプ(素材、本、薬…)
         if (!string.IsNullOrEmpty(data[7]))
@@ -106,9 +106,9 @@ public class ItemGenerator
             item.DamageTypes.Add((DamageType)Enum.Parse(typeof(DamageType), damageTypes[i], true));
         }
 
-        item.Attribution = (Attribution)Enum.Parse(typeof(Attribution), data[11], true);
+        //item.Attribution = (Attribution)Enum.Parse(typeof(Attribution), data[11], true);
 
-        item.Ailment = (Ailment)Enum.Parse(typeof(Ailment), data[12], true);
+        //item.Ailment = (Ailment)Enum.Parse(typeof(Ailment), data[12], true);
 
         item.Scope = (Scope)Enum.Parse(typeof(Scope), data[13], true);
 
@@ -223,7 +223,7 @@ public class ItemGenerator
         eq.RequiredStatus[Status.AGI] = int.Parse(data[24]);
         eq.RequiredStatus[Status.LUK] = int.Parse(data[25]);
 
-        eq.Attribution = (Attribution)Enum.Parse(typeof(Attribution), data[26], true);
+        //eq.Attribution = (Attribution)Enum.Parse(typeof(Attribution), data[26], true);
 
         eq.ResistibleAilments.Add((Ailment)Enum.Parse(typeof(Ailment), data[28], true));
 

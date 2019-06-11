@@ -489,7 +489,7 @@ public class MenuManager : MonoBehaviour
                         .Find("Button/SP").GetComponent<TextMeshProUGUI>();
                     Transform whiteLine = skillButtonPanels[j].Find("Button/WhiteLine");
 
-                    backGround.color = new Color(0.0f, 0.0f, 0.0f, 0.5f);
+                    backGround.color = new Color(0.0f, 0.0f, 0.0f, 0.3f);
                     skillNameText.text = "";
                     description.text = "";
                     sp.text = "";
@@ -510,7 +510,7 @@ public class MenuManager : MonoBehaviour
                         skillButtonPanels[j].name = Enum.GetName(typeof(SkillName), skill.SkillName);
                         skillNameText.text = skillName;
                         description.text = skill.Description;
-                        if (skill.SkillType == SkillType.active)
+                        if (skill.ActiveType == ActiveType.active)
                         {
                             sp.text = $"消費SP: {skill.SpConsumptions[skill.SkillLevel]}";
                         }
@@ -730,7 +730,7 @@ public class MenuManager : MonoBehaviour
                 }
             }
             Transform button1 = skillButtonPanels[j].Find("Button");
-            Utility.SetColorOfButtonObject(button1, c, 0.6f);
+            Utility.SetColorOfButtonObject(button1, c);
         }
 
         Vector3 mousePosition = Input.mousePosition;

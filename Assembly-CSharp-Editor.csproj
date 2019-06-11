@@ -351,30 +351,6 @@
     <Reference Include="UnityEditor.Purchasing">
       <HintPath>C:/Users/user/Desktop/advTest/advTest/Library/PackageCache/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll</HintPath>
     </Reference>
-    <Reference Include="DOTweenEditor">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/dotween/editor/DOTweenEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTweenProEditor">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/dotweenpro/Editor/DOTweenProEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="TextMeshPro-2017.3-Runtime">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/textmesh pro/plugins/Editor DLL/TextMeshPro-2017.3-Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="DemiLib">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/demilib/core/DemiLib.dll</HintPath>
-    </Reference>
-    <Reference Include="TextMeshPro-2017.3-Editor">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/textmesh pro/plugins/Editor DLL/TextMeshPro-2017.3-Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTween">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/dotween/DOTween.dll</HintPath>
-    </Reference>
-    <Reference Include="DemiEditor">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/demilib/core/editor/DemiEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTweenPro">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/dotweenpro/DOTweenPro.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b11/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
     </Reference>

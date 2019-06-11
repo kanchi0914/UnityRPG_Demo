@@ -81,14 +81,14 @@ public class Equipment : Item
 
     public Equipment()
     {
-        isConsumable = false;
+        IsConsumable = false;
         Target = Target.ally;
     }
 
-    public void SetStatus(string name = "", string id = "e")
-    {
-        this.Name = name;
-    }
+    //public void SetStatus(string name = "", string id = "e")
+    //{
+    //    this.Name = name;
+    //}
     //修正値を加えたあとの能力値
     public int GetAddedValue()
     {

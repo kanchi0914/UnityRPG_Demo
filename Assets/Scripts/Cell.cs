@@ -24,12 +24,15 @@ public class Cell : MonoBehaviour {
     private List<Enemy> enemies;
 
     public GameController gameController;
- 
+
     private GameObject cellObject;
     private GameObject topPlane;
     private GameObject parentPanel;
     
     private GameObject planeCell;
+
+    private GameObject darkCell;
+    private GameObject darkCellParent;
 
     public Shop Shop { get => shop; set => shop = value; }
     public List<Enemy> Enemies { get => enemies; set => enemies = value; }
@@ -46,7 +49,7 @@ public class Cell : MonoBehaviour {
     }
 
     public void Init(GameController gameController, GameObject cellObject, int coordX, int coordY, int width,
-        GameObject parent, Player player, CellType cellType)
+        GameObject parent, Player player, CellType cellType, GameObject darkCell)
     {
 
         this.gameController = gameController;
@@ -55,6 +58,7 @@ public class Cell : MonoBehaviour {
 
         this.player = player;
         this.cellObject = Instantiate(cellObject) as GameObject;
+        this.darkCell = Instantiate(darkCell) as GameObject;
         this.parentPanel = parent;
 
         this.Type = cellType;
@@ -75,6 +79,11 @@ public class Cell : MonoBehaviour {
         this.cellObject.transform.SetParent(parent.transform, false);
         string name = "";
         name += coord.x.ToString() + "," + coord.y.ToString();
+
+        darkCellParent = GameObject.Find("DarkCells");
+        position = (coord.x * width, coord.y * width);
+        this.darkCell.transform.position = new Vector3((float)position.x, (float)position.y, 0);
+        this.darkCell.transform.SetParent(darkCellParent.transform, true);
 
         SetActivePlane(false);
 
@@ -155,10 +164,15 @@ public class Cell : MonoBehaviour {
 
         topPlane = this.cellObject.transform.Find("plane").gameObject;
 
-        SetActivePlane(false);
+        SetActivePlane(true);
 
     }
 
+
+    public void ClearDark()
+    {
+        this.darkCell.SetActive(false);
+    }
 
 
     public void CreateShop()

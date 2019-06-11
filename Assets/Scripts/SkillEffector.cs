@@ -22,7 +22,7 @@ public class SkillEffector
 
         //SP消費
         fromUnit.ChangeSP(-skill.SpConsumptions[skill.SkillLevel]);
-        if (fromUnit.UnitType1 == Unit.UnitType.ally)
+        if (fromUnit.GetType() == typeof(Ally))
         {
             Ally ally = (Ally)fromUnit;
             gameController.AllyManager.SpDamageEffect(fromUnit);
@@ -36,7 +36,7 @@ public class SkillEffector
         //通常コマンド--------------------------------------------------------------------------------
         if (skill.SkillName == SkillName.攻撃)
         {
-            SetSingleDamage(skill, units, fromUnit, toUnit);
+            message += SetSingleDamage(skill, units, fromUnit, toUnit);
         }
         else if (skill.SkillName == SkillName.防御)
         {
@@ -44,9 +44,22 @@ public class SkillEffector
         else if (skill.SkillName == SkillName.何もしない)
         {
         }
+        //状態異常
         else if (skill.SkillName == SkillName.混乱)
         {
-            SetSingleDamage(skill, units, fromUnit, toUnit);
+            message += SetSingleDamage(skill, units, fromUnit, toUnit);
+        }
+        else if (skill.SkillName == SkillName.毒)
+        {
+            int damage = fromUnit.Statuses[Status.MaxHP] / 10;
+            fromUnit.SetDamage(damage);
+        }
+        else if (skill.SkillName == SkillName.呪い)
+        {
+
+        }else if (skill.SkillName == SkillName.封印)
+        {
+
         }
         //敵のコマンド------------------------------------------------
 
@@ -78,7 +91,7 @@ public class SkillEffector
 
         else if (skill.SkillName == SkillName.サンダーブレイク)
         {
-            SetRandomDamge(skill, units, fromUnit, toUnit, opponentUnits);
+            message += SetRandomDamge(skill, units, fromUnit, toUnit, opponentUnits);
         }
 
         //回復系---------------------------------------------------------------------------------------
@@ -92,7 +105,7 @@ public class SkillEffector
         }
         else if (skill.SkillName == SkillName.キュア)
         {
-            toUnit.RecoverAilment();
+            message += toUnit.RecoverAilment();
         }
         else if (skill.SkillName == SkillName.キュアオール)
         {
@@ -100,12 +113,12 @@ public class SkillEffector
 
             allyUnits.ForEach(u => 
             {
-                u.RecoverAilment();
+                message += u.RecoverAilment();
             });
         }
         else if (skill.SkillName == SkillName.リザレクション)
         {
-            toUnit.Resurrect();
+            message += toUnit.Resurrect();
         }
 
         //魔法系-------------------------------------------------------
@@ -138,7 +151,7 @@ public class SkillEffector
         {
             foreach (Unit u in opponentUnits)
             {
-                message += SetAilmentInProb(fromUnit, u, Ailment.terror);
+                message += SetAilmentInProb(fromUnit, u, Ailment.curse);
             }
         }
 
@@ -165,7 +178,7 @@ public class SkillEffector
             buff.Description = "筋力↑、呪い・恐怖耐性↑";
             buff.Statuses[Status.STR] = 0.5;
             //buff.AilmentResists.Add(Ailment.curse, 1);
-            buff.AilmentResists.Add(Ailment.terror, 1);
+            buff.AilmentResists.Add(Ailment.curse, 1);
             fromUnit.Buffs.Add(buff);
             message += toUnit.Name + $"の筋力が上昇した！" + "\n";
         }
@@ -252,7 +265,6 @@ public class SkillEffector
         }
 
         return message;
-
     }
 
     public string SetRandomDamge(Skill skill, List<Unit> units, Unit fromUnit, Unit toUnit, List<Unit> opponentUnits)

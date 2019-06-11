@@ -64,11 +64,14 @@ public class CallBackManager
     public void OnClickedAlly(string id)
     {
         gameController.AllyManager.SelectedAllyID = id;
+        gameController.SelectWhoPanel.SetActive(false);
     }
 
     public void OnClickedEnemy(string id)
     {
-        gameController.EnemyManager.SelectedEnemyID = id;
+        Enemy e = gameController.EnemyManager.enemies.Find
+            (ene => ene.ID1 == id);
+        if (!e.IsDeath) gameController.EnemyManager.SelectedEnemyID = id;
     }
 
     public void OnClickedMessageWindowInBattle(string id)
@@ -94,6 +97,7 @@ public class CallBackManager
     {
         gameController.SelectWhoPanel.gameObject.SetActive(false);
         gameController.InoperablePanelUnderAlly.gameObject.SetActive(false);
+        gameController.CommandManager.CurrentCommand.Ability = null;
         ClearCallBack();
     }
 

@@ -37,23 +37,32 @@ public static class EnumHolder
         return names[(int)status];
     }
 
-    public enum AbilityType { item, skill }
+    //public enum AbilityType { item, skill }
 
     //アイテムの種類
     public enum ItemType { weapon, guard, accessary, gem, material, drug, book }
 
     //スキルの発動タイプ
-    public enum SkillType { active, passive }
+    public enum ActiveType { active, passive }
+    //スキルタイプ
+    public enum SkillType { 物理攻撃, 魔法攻撃, 物理補助, 特殊, 恒常, 探索}
     //アビリティのタイプ
     public enum DamageType { nothing, damage, hpHeal, spHeal, cure, ailment, resurrection, buff, other }
     //ターゲット
-    public enum Target { nothing, opponent, ally, self }
+    public enum Target { nothing, opponent, ally, self}
     //単体か、全体か
-    public enum Scope { nothing, single, random, entire }
+    public enum Scope { nothing, single, random, singleRandom, entire }
 
     public enum EnemySkillName { 攻撃, 殴りつける }
 
-    public enum SkillName { 無し, 何もしない, 混乱, 眠り状態, 攻撃, 防御, 逃走,
+    public enum SkillName {
+        無し, 何もしない,
+        //状態異常
+        混乱, 眠り, 毒, 封印, 呪い,
+        //その他の状態異常
+        スタン, よろめき,
+        //通常コマンド
+        攻撃, 防御, 逃走,
         //敵のスキル
         金切り声, 
         //ウォリアー
@@ -97,8 +106,15 @@ public static class EnumHolder
     }
 
     //アイテムID
-    public enum ItemName { 無し, 粗悪な油, 薬草, 上薬草, 特薬草, 特効薬, 毒消し草, 万能薬, 魔力の粉, 魔力の丸薬, 魔力の源, 輝く粉
+    public enum ItemName { 無し, 油, 上質な油, 薬草, 上薬草, 特薬草, 特効薬, 毒消し草, 万能薬, 魔力の粉, 魔力の丸薬, 魔力の源, 輝く粉
             , 毒ビン, 火炎ビン, 電撃ビン, 氷結ビン }
+
+
+    public static string ConvertItemNameToString(ItemName i)
+    {
+        string s = Enum.GetName(typeof(ItemName), i);
+        return s;
+    }
 
 
     //スキル
@@ -171,22 +187,15 @@ public static class EnumHolder
     public enum Ailment
     {
         nothing, poison, sleep, paralysis, confusion
-            , seal, terror, stun, death
+            , seal, curse, stun, death
     }
 
     public static string GetAilmentName(this Ailment ailment)
     {
         string[] names = { "無し", "毒", "睡眠", "麻痺"
-                , "混乱", "封印", "恐怖", "スタン", "即死" };
+                , "混乱", "封印", "呪い", "スタン", "即死" };
         return names[(int)ailment];
     }
-    //public static string GetAilmentName(this Ailment ailment)
-    //{
-    //    string[] names = { "無し", "毒", "睡眠", "麻痺"
-    //            , "混乱", "封印", "恐怖", "呪い", "出血"
-    //            , "転倒", "凍結", "火傷", "スタン", "即死" };
-    //    return names[(int)ailment];
-    //}
 
     public static int ChangeMinusValueInNeed(int value)
     {

@@ -139,6 +139,8 @@
     <Compile Include="assets\Scripts\SkillEffector.cs" />
     <Compile Include="assets\Scripts\SkillGenerator.cs" />
     <Compile Include="assets\Scripts\SkillGenerator2.cs" />
+    <Compile Include="assets\Scripts\SoundManager.cs" />
+    <Compile Include="assets\Scripts\StatusInfoManager.cs" />
     <Compile Include="assets\Scripts\Test.cs" />
     <Compile Include="assets\Scripts\Testaaaaa.cs" />
     <Compile Include="assets\Scripts\TextController.cs" />
@@ -219,6 +221,7 @@
     <None Include="assets\demigiant\dotween\readme.txt" />
     <None Include="assets\resources\enemyData.txt" />
     <None Include="assets\textmesh pro\examples &amp; extras\Fonts\Bangers - OFL.txt" />
+    <None Include="assets\resources\ttt.txt" />
     <None Include="assets\demigiant\demilib\core\DemiLib.xml" />
     <None Include="assets\demigiant\readme_DOTweenPro.txt" />
     <Reference Include="Unity.PackageManagerUI.Editor">
@@ -451,21 +454,6 @@
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>C:/Users/user/Desktop/advTest/advTest/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
-    </Reference>
-    <Reference Include="TextMeshPro-2017.3-Runtime">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/textmesh pro/plugins/Editor DLL/TextMeshPro-2017.3-Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="DemiLib">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/demilib/core/DemiLib.dll</HintPath>
-    </Reference>
-    <Reference Include="TextMeshPro-2017.3-Editor">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/textmesh pro/plugins/Editor DLL/TextMeshPro-2017.3-Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTween">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/dotween/DOTween.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTweenPro">
-      <HintPath>C:/Users/user/Desktop/advTest/advTest/assets/demigiant/dotweenpro/DOTweenPro.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b11/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

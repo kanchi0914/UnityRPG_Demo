@@ -66,7 +66,16 @@ public class NewBehaviourScript : MonoBehaviour
     [Test]
     public void AllyTest()
     {
-        ItemGenerator itemGenerator = new ItemGenerator();
+        var aa = Resources.Load("Sounds/Purchased", typeof(AudioClip)) as AudioClip;
+        //if (bbb == null)
+        //{
+        //    throw new Exception();
+        //}
+        AudioSource audio = gameObject.AddComponent<AudioSource>();
+        //audio.clip = aa;
+        //audio.Play();
+        //bbb.Play();
+        //aa.Play();
     }
 
     //[Test]

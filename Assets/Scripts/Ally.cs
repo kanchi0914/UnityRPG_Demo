@@ -507,8 +507,10 @@ public class Ally : Unit
 
     public void HealAll(bool isEffectOn = false)
     {
-        Statuses[Status.currentHP] = Statuses[Status.MaxHP];
+        SetDamage(-999, isEffectOn = false);
         Statuses[Status.currentSP] = Statuses[Status.MaxSP];
+        gameController.AllyManager.SpDamageEffect(this);
+        //Statuses[Status.currentSP] = Statuses[Status.MaxSP];
     }
 
     //装備を合わせた物理攻撃力

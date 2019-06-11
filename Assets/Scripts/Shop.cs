@@ -46,14 +46,29 @@ public class Shop
     public void OpenBuyingWindow()
     {
         this.status = "buying";
-        gameController.ItemWindowManager.SetTwoColumnItemWindow("buying", lineUp);
+        gameController.ItemWindowManager.SetTwoColumnItemWindow("buying", lineUp, this);
     }
 
     public void OpenSellingWindow()
     {
         this.status = "selling";
         List<Item> items = gameController.AllyManager.Allies[0].Items;
-        gameController.ItemWindowManager.SetTwoColumnItemWindow("selling", items);
+        gameController.ItemWindowManager.SetTwoColumnItemWindow("selling", items, this);
+    }
+
+
+    public void BuyItem(Item item)
+    {
+        lineUp.Remove(item);
+        gameController.Gold -= item.PurchasePrice;
+        gameController.AllyManager.AddItem(item);
+
+    }
+
+    public void SellItem(Item item)
+    {
+        gameController.AllyManager.Allies[0].Items.Remove(item);
+        gameController.Gold += item.SellingPrice;
     }
 
     public void AddItem(Item item)

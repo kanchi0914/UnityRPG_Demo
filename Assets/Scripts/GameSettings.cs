@@ -143,29 +143,37 @@ public static class GameSettings
             defensiveP = toUnit.GetMagicalDefensivePower();
         }
 
-        defaultOffensiveP = offensiveP;
+        if (defensiveP < 1) defensiveP = 1;
+
+
 
         //基本ダメージ計算
         //引き算による通常ダメージと、
-        //  (0以下切り捨て)((攻撃力)- (防御力)) + (攻撃力)/(防御力)　* (Lv * 0.2 + 0.2)
+        //  (0以下切り捨て)((攻撃力 * 1.2) - (防御力)) + (攻撃力)/(防御力)　* (Lv * 0.2 + 0.2)
+        defaultOffensiveP = offensiveP;
+
+        //種族特攻
+        offensiveP += CalculateEnemyTypeDamage(defaultOffensiveP, skill, fromUnit, toUnit);
+
+        //offensiveP += (int)(offensiveP * 1.2);
+
         if (skill.AttackType == AttackType.physics)
         {
             damage = (int)((skill.GetSkillPower() * random / 100)
-                * ((ChangeMinusValueInNeed(offensiveP - defensiveP)
-                + (offensiveP / defensiveP) * (lv * 0.02 + 0.2))));
+                * ((ChangeMinusValueInNeed((int)(offensiveP * 1.2) - defensiveP)
+                + (offensiveP / defensiveP) * (lv * 0.2 + 0.2))));
 
         }
         else if (skill.AttackType == AttackType.magic)
         {
             damage = (int)((skill.GetSkillPower() * random / 100)
-                * ((ChangeMinusValueInNeed(offensiveP - defensiveP)
-                + (offensiveP / defensiveP) * (lv * 0.02 + 0.2))));
+                * ((ChangeMinusValueInNeed((int)(offensiveP * 1.2) - defensiveP)
+                + (offensiveP / defensiveP) * (lv * 0.2 + 0.2))));
         }
         else damage = 0;
         if (damage < 0) damage = 0;
 
-        //種族特攻
-        damage = CalculateEnemyTypeDamage(damage, skill, fromUnit, toUnit);
+
 
         //状態異常によるダメージ増減
         damage = CalculateAilmentDamage(damage, toUnit);
@@ -220,7 +228,7 @@ public static class GameSettings
     }
 
 
-    public static int CalculateEnemyTypeDamage(int damage, Skill skill, Unit fromUnit, Unit toUnit)
+    public static int CalculateEnemyTypeDamage(int value, Skill skill, Unit fromUnit, Unit toUnit)
     {
         if (toUnit.GetType() == typeof(Enemy))
         {
@@ -234,13 +242,12 @@ public static class GameSettings
                     rate += ally.EquippedWeapon.Effectivenesses[e];
                 }
             }
-
-            damage *= rate;
-            return damage;
+            value *= (rate / 100);
+            return value;
         }
         else
         {
-            return damage;
+            return value;
         }
     }
 
@@ -381,7 +388,7 @@ public static class GameSettings
         //物理攻撃なら、武器の効果を追加
         if (skill.AttackType == AttackType.physics)
         {
-            if (fromUnit.UnitType1 == Unit.UnitType.ally)
+            if (fromUnit.GetType() == typeof(Ally))
             {
                 //武器の追加効果
                 Ally ally = (Ally)fromUnit;

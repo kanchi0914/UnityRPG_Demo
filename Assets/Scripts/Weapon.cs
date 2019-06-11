@@ -9,6 +9,8 @@ public class Weapon : Equipment {
     EnemyType effectivenessKeys;
     Ailment additonKeys;
 
+    public Attribution Attribution { get; set; }
+
     public Dictionary<EnemyType, int> Effectivenesses { get; set; } = new Dictionary<EnemyType, int>();
     //public Dictionary<EnemyType, int> AdditonalEffectivenesses { get; set; }
     public Dictionary<Status, int> Statuses { get; set; } = new Dictionary<Status, int>();
